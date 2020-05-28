@@ -1,3 +1,6 @@
+
+
+
 from ROOT import *
 import AtlasStyle
 import AtlasUtils
@@ -59,6 +62,28 @@ def plot_graph (path_graph, name_graph, number_graph, x, y, graph_title_x,graph_
 
     graph.SetMarkerColor( 2 )
     graph.SetMarkerStyle( 20 )
+    graph.SetMarkerSize( 2 )
+    graph.GetXaxis().SetTitle(graph_title_x)
+    # if isdate:                                                                                                                               
+    #     graph.GetXaxis().SetTimeDisplay(1)                                                                                                       #     graph.GetXaxis().SetTimeFormat("%d/%m")                                                                                              
+    graph.GetYaxis().SetTitle(graph_title_y)
+    if islowMu:
+        graph.GetXaxis().SetRangeUser(0,5)
+    graph.GetXaxis().SetNdivisions(4,4,0)
+    graph.Draw("AP")
+    canvas.Modified()
+    canvas.Print( path_graph )
+
+
+
+def plot_graph (path_graph, name_graph, number_graph, x, y, graph_title_x,graph_title_y, islowMu = False):
+# isdate= False, islowMu = False):                                                                                                             
+
+    canvas = ROOT.TCanvas( 'name', 'name',800, 600 )
+    graph = ROOT.TGraph(number_graph , x, y)
+
+    graph.SetMarkerColor( 2 )
+    graph.SetMarkerStyle( 20 )
     graph.SetMarkerSize( 1.3 )
     graph.GetXaxis().SetTitle(graph_title_x)
     # if isdate:                                                                                                                               
@@ -71,6 +96,87 @@ def plot_graph (path_graph, name_graph, number_graph, x, y, graph_title_x,graph_
     graph.Draw("AP")
     canvas.Modified()
     canvas.Print( path_graph )
+
+
+
+def plot_graph (path_graph, name_graph, number_graph, x, y, graph_title_x,graph_title_y, islowMu = False):
+# isdate= False, islowMu = False):                                                                                                             
+
+    canvas = ROOT.TCanvas( 'name', 'name',800, 600 )
+    graph = ROOT.TGraph(number_graph , x, y)
+
+    graph.SetMarkerColor( 2 )
+    graph.SetMarkerStyle( 20 )
+    graph.SetMarkerSize( 1.3 )
+    graph.GetXaxis().SetTitle(graph_title_x)
+    # if isdate:                                                                                                                               
+    #     graph.GetXaxis().SetTimeDisplay(1)                                                                                                   
+    #     graph.GetXaxis().SetTimeFormat("%d/%m")                                                                                              
+    graph.GetYaxis().SetTitle(graph_title_y)
+    if islowMu:
+        graph.GetXaxis().SetRangeUser(0,5)
+    graph.GetXaxis().SetNdivisions(4,4,0)
+    graph.Draw("AP")
+    canvas.Modified()
+    canvas.Print( path_graph )
+
+
+
+def plot_graph_erro (path_graph, name_graph, number_graph, x, y,x_err,y_err, graph_title_x,graph_title_y, islowMu = False):
+# isdate= False, islowMu = False):                                                                                                             
+
+    canvas = ROOT.TCanvas( 'name', 'name',800, 600 )
+    print len(x),len(y),len(y_err),number_graph
+    graph = ROOT.TGraphErrors(number_graph , x, y,x_err, y_err)
+    
+    graph.SetMarkerColor( 2 )
+    graph.SetMarkerStyle( 20 )
+    graph.SetMarkerSize( 0.5 )
+    graph.GetXaxis().SetTitle(graph_title_x)
+
+#    graph.GetYaxis().SetRangeUser(0.0,100)
+    # if isdate:                                                                                                                               
+    #     graph.GetXaxis().SetTimeDisplay(1)                                                                                                   
+    #     graph.GetXaxis().SetTimeFormat("%d/%m")                                                                                              
+    graph.GetYaxis().SetTitle(graph_title_y)
+    if islowMu:
+        graph.GetXaxis().SetRangeUser(0,5)
+    graph.GetXaxis().SetNdivisions(4,4,0)
+    graph.Draw("AP")
+    canvas.Modified()
+    canvas.Print( path_graph )
+
+
+
+def plot_graph_error (path_graph, name_graph, number_graph, x, y,y_err, graph_title_x,graph_title_y, islowMu = False):
+# isdate= False, islowMu = False):                                                                                                             
+
+    canvas = ROOT.TCanvas( 'name', 'name',800, 600 )
+    print len(x),len(y),len(y_err),number_graph
+    graph = ROOT.TGraphErrors(number_graph , x, y,np.zeros(len(x)), y_err)
+    
+    graph.SetMarkerColor( 2 )
+    graph.SetMarkerStyle( 20 )
+    graph.SetMarkerSize( 1 )
+    graph.GetXaxis().SetTitle(graph_title_x)
+
+#    graph.GetYaxis().SetRangeUser(0.0,100)
+    # if isdate:                                                                                                                               
+    #     graph.GetXaxis().SetTimeDisplay(1)                                                                                                   
+    #     graph.GetXaxis().SetTimeFormat("%d/%m")                                                                                              
+    graph.GetYaxis().SetTitle(graph_title_y)
+    if islowMu:
+        graph.GetXaxis().SetRangeUser(0,5)
+    graph.GetXaxis().SetNdivisions(4,4,0)
+    graph.Draw("AP")
+    canvas.Modified()
+    canvas.Print( path_graph )
+
+
+
+
+
+
 
 
 
@@ -90,6 +196,10 @@ def multigraph(path, number1, number2, x1, y1,x2,y2):
     mg.Add(graph1)
     mg.Add(graph2)
     mg.Draw("ap")
+
+    mg.GetXaxis().SetRangeUser(-1,2)
+    mg.GetXaxis().SetLimits(-1,2)
+
     canvas.Modified()
     canvas.Print(path )
 
