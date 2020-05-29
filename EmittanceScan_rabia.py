@@ -111,7 +111,17 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     double_gauss_fit.SetParameter(5,m1)#mean
 #    print bunches,"bunches"
     
-    
+    # Do a fit for a particular run number, X or Y, early or late
+    # RunNumber = 123456
+    # Xscan = True
+    # Early = False
+    # [A1, A2, s1, s2, m1, m2] = GetInitialParameters(RunNumber, Xscan, Early)
+    # fit.SetParameter(0,A1) #amplitude                                                                                                            
+    # fit.SetParameter(3,A2) #amp                                                                                                                  
+    # fit.SetParameter(4,s2) #sigma2                                                                                                             
+    # fit.SetParameter(1,m1) #mean1                                                                                                               
+    # fit.SetParameter(2,s1) #sigma1                                                                                                             
+    # fit.SetParameter(5,m2) #mean 
 
     # calling function Initial_par (for those runs which have different values of initial paramters)
     # < 2000
