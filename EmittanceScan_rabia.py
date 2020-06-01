@@ -25,7 +25,11 @@ from initialPar import *
 
 # importing pickle files
 
+<<<<<<< HEAD
 #fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_350184.pickle"))
+=======
+#fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_350880.pickle"))
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
 #fit_pickle = sorted(glob.glob("test/*trk*"))
 
@@ -111,7 +115,21 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     double_gauss_fit.SetParameter(5,m1)#mean
 #    print bunches,"bunches"
     
+<<<<<<< HEAD
     
+=======
+    # Do a fit for a particular run number, X or Y, early or late
+    # RunNumber = 123456
+    # Xscan = True
+    # Early = False
+    # [A1, A2, s1, s2, m1, m2] = GetInitialParameters(RunNumber, Xscan, Early)
+    # fit.SetParameter(0,A1) #amplitude                                                                                                            
+    # fit.SetParameter(3,A2) #amp                                                                                                                  
+    # fit.SetParameter(4,s2) #sigma2                                                                                                             
+    # fit.SetParameter(1,m1) #mean1                                                                                                               
+    # fit.SetParameter(2,s1) #sigma1                                                                                                             
+    # fit.SetParameter(5,m2) #mean 
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
     # calling function Initial_par (for those runs which have different values of initial paramters)
     # < 2000
@@ -119,7 +137,11 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
         if early and not Xscan:
             initialparameter(double_gauss_fit, 0.3*amp1, 0.9*amp1, m1, m1, s1, 1.3*s1)
         if not early and Xscan:
+<<<<<<< HEAD
             initialparameter(double_gauss_fit, 0.3*amp1, 0.9*amp1, m1, m1, s1, 1.3*s1)
+=======
+            initialparameter(double_gauss_fit, 0.711, 0.24, -m1*0.1, m1*0.5, 0.0015, 0.5)
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
    # <2000         
     
     if run_number==359286:
@@ -136,9 +158,12 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
         if early and not Xscan:
             initialparameter(double_gauss_fit, 0.9*amp1, 0.1*amp1, m1, m1, s1, 2*s1)
 
+<<<<<<< HEAD
         if not early and Xscan:
             initialparameter(double_gauss_fit, 0.9,0.9, m1, m1, s1, s1)
 
+=======
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
         if not early and not Xscan:
             initialparameter(double_gauss_fit, amp1, amp1, m1, m1, s1, 2*s1)
 
@@ -271,6 +296,7 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     if run_number==350121:
         if Xscan and early:
             initialparameter(double_gauss_fit,amp1*0.52, amp1*0.49, m1, m1 ,s1, s1*2)
+<<<<<<< HEAD
 
 
         if early and Xscan:
@@ -279,6 +305,10 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
             initialparameter(double_gauss_fit,amp1*0.6, amp1*0.4, m1, m1 ,s1, s1*2)
 
 
+=======
+        if not Xscan and early:
+            initialparameter(double_gauss_fit,amp1, amp1, m1, m1 ,s1, s1*1.8)
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
         # if not early and Xscan:
         #     initialparameter(double_gauss_fit,amp1*0.5, amp1*0.5, m1, m1 ,s1, s1*1.28)
         if not early and not Xscan:
@@ -950,7 +980,11 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
  
 
     
+<<<<<<< HEAD
     status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
+=======
+    status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 
@@ -959,11 +993,19 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     if int(status) ==4:
         ROOT.TVirtualFitter.Fitter(graph).SetMaxIterations(10000)# increase iterations
 
+<<<<<<< HEAD
         status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
 
         # again fitting if fit fails
         if int(status)==4:
             status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
+=======
+        status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
+
+        # again fitting if fit fails
+        if int(status)==4:
+            status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 
@@ -1210,17 +1252,26 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
         
         # formula for finding the cap sigma
         sigma = (1 / math.sqrt (2 * math.pi)) * integral /peak 
+<<<<<<< HEAD
  
 
         print sigma,"sigma"
        
+=======
+        
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
         # derivatives of the paramters 
 
         # a1                                                                                                         
         der_a1= (1.0 / (math.sqrt(2 * math.pi) * S1) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - M1)**2 / (S1 **2) ) )# checked  
 
 
+<<<<<<< HEAD
         
+=======
+                 
+
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
          #a2                                                                                                          
 
         der_a2= (1.0 / ( math.sqrt(2 * math.pi) * S2) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - M2)**2 / (S2 **2) ) )# \checked
@@ -1277,6 +1328,7 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
 
 #        print peak_error,"peak error"
 #        print peak,"peak"
+<<<<<<< HEAD
         
 
 #        print A1,"A1"
@@ -1345,6 +1397,14 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
 
 
         return sigma, peak, peak_error,sigma_error
+=======
+
+
+
+
+             
+        return sigma, peak, peak_error
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
     # calling the cap_sigma fucntion
 
@@ -1353,7 +1413,11 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     sigma = sigma_fit[0]
     peak =  sigma_fit[1]
     error_peak= sigma_fit[2]
+<<<<<<< HEAD
     error_sigma=sigma_fit[3]
+=======
+    
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 
@@ -1378,9 +1442,15 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     # 16 --> S2
     # 17 --> M1
     # 18 --> M2
+<<<<<<< HEAD
     # 19 --> error_sigma
 
     return sigma, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix, error_peak,relative_a1,relative_a2, relative_s1, relative_s2, absolute_m1, absolute_m2, A1, A2, S1, S2, M1, M2,error_sigma
+=======
+
+
+    return sigma, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix, error_peak,relative_a1,relative_a2, relative_s1, relative_s2, absolute_m1, absolute_m2, A1, A2, S1, S2, M1, M2
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 #### empty array portion
@@ -1455,9 +1525,12 @@ step_5=np.array([])
 FOM=np.array([])
 
 
+<<<<<<< HEAD
 rel_error_sigma_x =np.array([])
 rel_error_sigma_y=np.array([])
 
+=======
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 
@@ -1511,6 +1584,7 @@ for filename in fit_pickle:
             if output['bunches'] >2000: # bunches cut
                 step_1=np.append(step_1,output['run'])
 
+<<<<<<< HEAD
 #                print len(step_1),"step1 bunches"
 
                 if result_x[4]==0 and result_y[4]==0 :# converge fit
@@ -1523,18 +1597,38 @@ for filename in fit_pickle:
                    # if result_y[4]>0:
 #                        print result_y[4],"Y fit is not converging"
 #                        print output['run']
+=======
+                print len(step_1),"step1 bunches"
+
+                if result_x[4]==0 and result_y[4]==0 :# converge fit
+
+                    if result_x[4]>0 :
+                        print result_x[4],"X fit is not coverging"
+                        print output['run']
+                        
+
+                    if result_y[4]>0:
+                        print result_y[4],"Y fit is not converging"
+                        print output['run']
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
                     step_2= np.append(step_2, result_x[4])
                     step_3=np.append(step_3, result_y[4])
 
+<<<<<<< HEAD
 #                    print len(step_2),"step_2 converging fit"
 #                    print len(step_3),"step_3 converging fit"
+=======
+                    print len(step_2),"step_2 converging fit"
+                    print len(step_3),"step_3 converging fit"
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 
                     if result_x[5] == 3 and result_y[5]==3: ## covariance matrix cut
 
 
+<<<<<<< HEAD
                     #    if result_x[5]<3 :
 #                            print result_x[5],"X covarinace matrix is not converging"
 #                            print output['run']
@@ -1542,20 +1636,37 @@ for filename in fit_pickle:
                      #   if result_y[5]<3:
 #                            print result_y[5],"Y covarinace matrix is not converging"
 #                            print output['run']
+=======
+                        if result_x[5]<3 :
+                            print result_x[5],"X covarinace matrix is not converging"
+                            print output['run']
+
+                        if result_y[5]<3:
+                            print result_y[5],"Y covarinace matrix is not converging"
+                            print output['run']
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
                         step_4=np.append(step_4,result_x[5])
                         step_5=np.append(step_5,result_y[5])
 
 
+<<<<<<< HEAD
 #                        print len(step_4),"step_4 covarinace matrix"
 #                        print len(step_5),"step_5 covarinace matrix"
 
                         if result_x[1]<7 and result_y[1]<7:#chi/ndf cut
+=======
+                        print len(step_4),"step_4 covarinace matrix"
+                        print len(step_5),"step_5 covarinace matrix"
+
+                        if result_x[1]<7 and result_y[1]<7:# chi/ndf cut
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
                             print len(chi2_NDF_x),"chi_NDF_x"
                             print len(chi2_NDF_y),"chi_NDF_y"
+<<<<<<< HEAD
                         #     print output['run'],"run"
                         #     print result_x[1],"Xscan"
                         #     print result_y[1],"y scan"
@@ -1563,6 +1674,15 @@ for filename in fit_pickle:
 
 
                         
+=======
+                            print output['run'],"run"
+                            print result_x[1],"Xscan"
+                            print result_y[1],"y scan"
+                            
+
+
+
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
                             #chi2/ndf X scan
                             chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
                             histogram(100,0,4,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi_NDF_x")
@@ -1576,6 +1696,7 @@ for filename in fit_pickle:
                             rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
                              # histogram
                             histogram(100,0,0.5,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
+<<<<<<< HEAD
                         
 
 
@@ -1602,6 +1723,12 @@ for filename in fit_pickle:
                             
 
 
+=======
+                            
+                            # now expected luminosity
+                            
+
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
                             expected_lumi =expected_luminosity(result_x[0],result_y[0],product)
 
                             # figure of merit

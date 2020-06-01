@@ -24,7 +24,17 @@ import glob
 
 
 
+<<<<<<< HEAD
 
+=======
+# def GetInitialParameters(RunNumber, Xscan, Early):
+# if run_number==350013 and Xscan and Early:
+#     A1 = 3.22
+#     .
+#     .
+#     .
+# return [A1, A2, s1, s2, m1, m2]
+>>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 # initial paramter function
