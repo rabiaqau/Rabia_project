@@ -1,8 +1,5 @@
-
-
 #Rabia shaheen
 #16_nov_2019
-
 # Parts of script
 
 # import libararies
@@ -25,11 +22,11 @@ from initialPar import *
 
 # importing pickle files
 
-<<<<<<< HEAD
+
 #fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_350184.pickle"))
-=======
+
 #fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_350880.pickle"))
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
 fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
 #fit_pickle = sorted(glob.glob("test/*trk*"))
 
@@ -115,9 +112,9 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     double_gauss_fit.SetParameter(5,m1)#mean
 #    print bunches,"bunches"
     
-<<<<<<< HEAD
+
     
-=======
+
     # Do a fit for a particular run number, X or Y, early or late
     # RunNumber = 123456
     # Xscan = True
@@ -129,7 +126,7 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     # fit.SetParameter(1,m1) #mean1                                                                                                               
     # fit.SetParameter(2,s1) #sigma1                                                                                                             
     # fit.SetParameter(5,m2) #mean 
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
 
     # calling function Initial_par (for those runs which have different values of initial paramters)
     # < 2000
@@ -137,11 +134,11 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
         if early and not Xscan:
             initialparameter(double_gauss_fit, 0.3*amp1, 0.9*amp1, m1, m1, s1, 1.3*s1)
         if not early and Xscan:
-<<<<<<< HEAD
+
             initialparameter(double_gauss_fit, 0.3*amp1, 0.9*amp1, m1, m1, s1, 1.3*s1)
-=======
+
             initialparameter(double_gauss_fit, 0.711, 0.24, -m1*0.1, m1*0.5, 0.0015, 0.5)
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
    # <2000         
     
     if run_number==359286:
@@ -158,12 +155,12 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
         if early and not Xscan:
             initialparameter(double_gauss_fit, 0.9*amp1, 0.1*amp1, m1, m1, s1, 2*s1)
 
-<<<<<<< HEAD
+
         if not early and Xscan:
             initialparameter(double_gauss_fit, 0.9,0.9, m1, m1, s1, s1)
 
-=======
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
+
         if not early and not Xscan:
             initialparameter(double_gauss_fit, amp1, amp1, m1, m1, s1, 2*s1)
 
@@ -296,7 +293,7 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     if run_number==350121:
         if Xscan and early:
             initialparameter(double_gauss_fit,amp1*0.52, amp1*0.49, m1, m1 ,s1, s1*2)
-<<<<<<< HEAD
+
 
 
         if early and Xscan:
@@ -305,10 +302,10 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
             initialparameter(double_gauss_fit,amp1*0.6, amp1*0.4, m1, m1 ,s1, s1*2)
 
 
-=======
+
         if not Xscan and early:
             initialparameter(double_gauss_fit,amp1, amp1, m1, m1 ,s1, s1*1.8)
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
         # if not early and Xscan:
         #     initialparameter(double_gauss_fit,amp1*0.5, amp1*0.5, m1, m1 ,s1, s1*1.28)
         if not early and not Xscan:
@@ -980,11 +977,11 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
  
 
     
-<<<<<<< HEAD
-    status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
-=======
+
+#    status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
+
     status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
 
 
 
@@ -993,22 +990,16 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     if int(status) ==4:
         ROOT.TVirtualFitter.Fitter(graph).SetMaxIterations(10000)# increase iterations
 
-<<<<<<< HEAD
-        status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
 
-        # again fitting if fit fails
-        if int(status)==4:
-            status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
-=======
         status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
 
         # again fitting if fit fails
         if int(status)==4:
             status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
 
 
+    # status of the fit
     status_of_fit = int(status)
 #    print status_of_fit,"status_of_fit"
     # chi2 from fit before correction
@@ -1031,6 +1022,15 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
 
 #    print chi2_double_gauss_fit
  
+
+
+
+    if 4<chi_NDF_double_gauss_fit<5:
+
+
+        print chi_NDF_double_gauss_fit,"chi_NDF_double_gauss_fit"
+        print run,"run"
+        
 
     #cosmetics
 
@@ -1252,26 +1252,21 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
         
         # formula for finding the cap sigma
         sigma = (1 / math.sqrt (2 * math.pi)) * integral /peak 
-<<<<<<< HEAD
+
  
 
-        print sigma,"sigma"
+  #      print sigma,"sigma"
        
-=======
+
         
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
         # derivatives of the paramters 
 
         # a1                                                                                                         
         der_a1= (1.0 / (math.sqrt(2 * math.pi) * S1) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - M1)**2 / (S1 **2) ) )# checked  
+          
 
 
-<<<<<<< HEAD
-        
-=======
-                 
-
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
          #a2                                                                                                          
 
         der_a2= (1.0 / ( math.sqrt(2 * math.pi) * S2) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - M2)**2 / (S2 **2) ) )# \checked
@@ -1328,7 +1323,7 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
 
 #        print peak_error,"peak error"
 #        print peak,"peak"
-<<<<<<< HEAD
+
         
 
 #        print A1,"A1"
@@ -1353,58 +1348,48 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
 #        print der_s2,"der_s2"
 
 
-        der_sigma_m1 = -( (A1 + A2) * der_m1 ) / math.sqrt(2*math.pi) / peak**2#checked
+        der_sigma_m1 = ( (A1 + A2) * der_m1 ) / math.sqrt(2*math.pi) / peak**2#checked
 #        print der_m1,"der_m1"
         #print der_sigma_m1,"der_sigma_m1"
-        der_sigma_m2 = -( (A1 + A2) * der_m2 ) / math.sqrt(2*math.pi) / peak**2#checked
+        der_sigma_m2 = ( (A1 + A2) * der_m2 ) / math.sqrt(2*math.pi) / peak**2#checked
 #        print der_m2,"der_m2"
         #print der_sigma_m2,"der_sigma_m2"
              
 
 
         # off -diagnal elements for the sigma
-
+        #0
         off_sigma_diagnol_0= 2.0 * der_sigma_a1 * der_sigma_m1 * e01 + 2.0 * der_sigma_a1 * der_sigma_s1 * e02 + 2.0 * der_sigma_a1 * der_sigma_a2 * e03 + 2.0 * der_sigma_a1 * der_sigma_s2 * e04 + 2.0 * der_sigma_a1 * der_sigma_m2 * e05
 
-
+        #1
 
         off_sigma_diagnol_1 = 2.0 * der_sigma_m1 * der_sigma_s1 * e12 + 2.0 * der_sigma_m1 * der_sigma_a2 * e13 + 2.0 * der_sigma_m1 * der_sigma_s2 * e14 + 2.0* der_sigma_m1 * der_sigma_m2 * e15                                                                              
 
-
+        #2
         off_sigma_diagnol_2 = 2.0 * der_sigma_s1 * der_sigma_a2 * e23 + 2.0 * der_sigma_s1 * der_sigma_s2 * e24 + 2.0 * der_sigma_s1 * der_sigma_m2 * e25 
 
 
-
+        #3
 
         off_sigma_diagnol_3 = 2.0 * der_sigma_a2 * der_sigma_s2 * e34 + 2.0 * der_sigma_a2 * der_sigma_m2 *e35                              
-
+        #4
 
 
         off_sigma_diagnol_4 = 2.0 * der_sigma_s2 * der_sigma_m2 * e45                                                              
+        # sigma error
 
         sigma_error = math.sqrt( (error_a1 * der_sigma_a1)**2 + (error_a2 * der_sigma_a2)**2 + (error_s1 * der_sigma_s1)**2 + (error_s2 * der_sigma_s2)**2 + (error_m1 * der_sigma_m1)**2 + (error_m2* der_sigma_m2)**2 + off_sigma_diagnol_0 + off_sigma_diagnol_1 + off_sigma_diagnol_2 + off_sigma_diagnol_3 + off_sigma_diagnol_4 )  
 
-        print sigma_error,"sigma_error"
+#        print sigma_error,"sigma_error"
 
-        relative_sigma_error = (sigma_error / sigma)*100
-        if relative_sigma_error>5:
-            print run_number,"run"
-            print bunches,"bunhces"
-            print sigma_error,"sigma error"
+        # relative_sigma_error = (sigma_error / sigma)*100
+        # if relative_sigma_error>5:
+        #     print run_number,"run"
+        #     print bunches,"bunhces"
+        #     print sigma_error,"sigma error"
             
-
-
-
-
         return sigma, peak, peak_error,sigma_error
-=======
 
-
-
-
-             
-        return sigma, peak, peak_error
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
 
     # calling the cap_sigma fucntion
 
@@ -1413,13 +1398,10 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     sigma = sigma_fit[0]
     peak =  sigma_fit[1]
     error_peak= sigma_fit[2]
-<<<<<<< HEAD
+
     error_sigma=sigma_fit[3]
-=======
+
     
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
-
-
 
 
 
@@ -1442,15 +1424,15 @@ def analyse_scan(scan,separation, luminosity, error, path, run_number, bunches, 
     # 16 --> S2
     # 17 --> M1
     # 18 --> M2
-<<<<<<< HEAD
+
     # 19 --> error_sigma
 
-    return sigma, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix, error_peak,relative_a1,relative_a2, relative_s1, relative_s2, absolute_m1, absolute_m2, A1, A2, S1, S2, M1, M2,error_sigma
-=======
 
 
-    return sigma, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix, error_peak,relative_a1,relative_a2, relative_s1, relative_s2, absolute_m1, absolute_m2, A1, A2, S1, S2, M1, M2
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
+
+    return sigma, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix, error_peak,relative_a1,relative_a2, relative_s1, relative_s2, absolute_m1, absolute_m2, A1, A2, S1, S2, M1, M2, error_sigma
+
 
 
 #### empty array portion
@@ -1525,12 +1507,13 @@ step_5=np.array([])
 FOM=np.array([])
 
 
-<<<<<<< HEAD
+
 rel_error_sigma_x =np.array([])
 rel_error_sigma_y=np.array([])
 
-=======
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+rel_error_on_lumi=np.array([])
+
+
 
 
 
@@ -1584,7 +1567,7 @@ for filename in fit_pickle:
             if output['bunches'] >2000: # bunches cut
                 step_1=np.append(step_1,output['run'])
 
-<<<<<<< HEAD
+
 #                print len(step_1),"step1 bunches"
 
                 if result_x[4]==0 and result_y[4]==0 :# converge fit
@@ -1597,38 +1580,38 @@ for filename in fit_pickle:
                    # if result_y[4]>0:
 #                        print result_y[4],"Y fit is not converging"
 #                        print output['run']
-=======
-                print len(step_1),"step1 bunches"
 
-                if result_x[4]==0 and result_y[4]==0 :# converge fit
+#                    print len(step_1),"step1 bunches"
 
-                    if result_x[4]>0 :
-                        print result_x[4],"X fit is not coverging"
-                        print output['run']
+                    if result_x[4]==0 and result_y[4]==0 :# converge fit
+
+                    # if result_x[4]>0 :
+                    #     print result_x[4],"X fit is not coverging"
+                    #     print output['run']
                         
 
-                    if result_y[4]>0:
-                        print result_y[4],"Y fit is not converging"
-                        print output['run']
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+#                    if result_y[4]>0:
+                        # print result_y[4],"Y fit is not converging"
+                        # print output['run']
 
-                    step_2= np.append(step_2, result_x[4])
-                    step_3=np.append(step_3, result_y[4])
 
-<<<<<<< HEAD
+                        step_2= np.append(step_2, result_x[4])
+                        step_3=np.append(step_3, result_y[4])
+
+
 #                    print len(step_2),"step_2 converging fit"
 #                    print len(step_3),"step_3 converging fit"
-=======
-                    print len(step_2),"step_2 converging fit"
-                    print len(step_3),"step_3 converging fit"
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
+                    # print len(step_2),"step_2 converging fit"
+                    # print len(step_3),"step_3 converging fit"
+
 
 
 
                     if result_x[5] == 3 and result_y[5]==3: ## covariance matrix cut
 
 
-<<<<<<< HEAD
+
                     #    if result_x[5]<3 :
 #                            print result_x[5],"X covarinace matrix is not converging"
 #                            print output['run']
@@ -1636,56 +1619,64 @@ for filename in fit_pickle:
                      #   if result_y[5]<3:
 #                            print result_y[5],"Y covarinace matrix is not converging"
 #                            print output['run']
-=======
-                        if result_x[5]<3 :
-                            print result_x[5],"X covarinace matrix is not converging"
-                            print output['run']
 
-                        if result_y[5]<3:
-                            print result_y[5],"Y covarinace matrix is not converging"
-                            print output['run']
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+                        # if result_x[5]<3 :
+                        #     print result_x[5],"X covarinace matrix is not converging"
+                        #     print output['run']
+
+                        # if result_y[5]<3:
+                        #     print result_y[5],"Y covarinace matrix is not converging"
+                        #     print output['run']
+
 
 
                         step_4=np.append(step_4,result_x[5])
                         step_5=np.append(step_5,result_y[5])
 
 
-<<<<<<< HEAD
+
 #                        print len(step_4),"step_4 covarinace matrix"
 #                        print len(step_5),"step_5 covarinace matrix"
 
-                        if result_x[1]<7 and result_y[1]<7:#chi/ndf cut
-=======
-                        print len(step_4),"step_4 covarinace matrix"
-                        print len(step_5),"step_5 covarinace matrix"
-
-                        if result_x[1]<7 and result_y[1]<7:# chi/ndf cut
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+                        if result_x[1]<4 and result_y[1]<4:#chi/ndf cut
 
 
-                            print len(chi2_NDF_x),"chi_NDF_x"
-                            print len(chi2_NDF_y),"chi_NDF_y"
-<<<<<<< HEAD
-                        #     print output['run'],"run"
-                        #     print result_x[1],"Xscan"
-                        #     print result_y[1],"y scan"
-                            
-
-
-                        
-=======
-                            print output['run'],"run"
-                            print result_x[1],"Xscan"
-                            print result_y[1],"y scan"
-                            
+ 
 
 
 
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
+
+
+
+
+
+
                             #chi2/ndf X scan
                             chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
+
+                            print len(chi2_NDF_x),"chi/ndf"
+
                             histogram(100,0,4,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi_NDF_x")
+
+
+
+
+                            # if result_x[1]<4 :
+                            #     print result_x[1],"chi2_NDF_x"
+                            
+                            #     print output['run'],"run"
+
+
+                            # if  result_y[1]<4:
+                            #     print result_y[1],"chi2_NDF_y"
+                            
+                            #     print output['run'],"run"
+
+
+
+    
+
+
                             #chi2/ndf Y scan
                             chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
                             histogram(100,0,4,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi_NDF_y")
@@ -1696,7 +1687,7 @@ for filename in fit_pickle:
                             rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
                              # histogram
                             histogram(100,0,0.5,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
-<<<<<<< HEAD
+
                         
 
 
@@ -1705,31 +1696,41 @@ for filename in fit_pickle:
                             rel_error_sigma_x = np.append(rel_error_sigma_x,rel_sigma_x)
                             # histogram
 
-                            histogram(100,0,5,rel_error_sigma_x,"rel_error_on_sigma_x","plots/rel_error_on_sigma_x.png","rel_error_on_sigma_x[%]")
+                            histogram(100,0,3,rel_error_sigma_x,"rel_error_on_sigma_x","plots/rel_error_on_sigma_x.png","rel_error_on_sigma_x[%]")
 
 
                             # y scan sigma
                             rel_sigma_y = (result_y[19]/result_y[0])*100
                             rel_error_sigma_y = np.append(rel_error_sigma_y,rel_sigma_y)
 
-                            histogram(100,0,5,rel_error_sigma_y,"rel_error_on_sigma_y","plots/rel_error_on_sigma_y.png","rel_error_on_sigma_y[%]")
+                            histogram(100,0,3,rel_error_sigma_y,"rel_error_on_sigma_y","plots/rel_error_on_sigma_y.png","rel_error_on_sigma_y[%]")
 
 
 
-                            #histogram
-                            
-
-                            # now expected luminosity
-                            
 
 
-=======
+
+
                             
                             # now expected luminosity
                             
-
->>>>>>> be0a288319fb9e829fc479f331c3f7ca319a5d0a
                             expected_lumi =expected_luminosity(result_x[0],result_y[0],product)
+
+
+
+                            ## error on lumi
+                            abs_lumi = math.sqrt((result_y[19]/result_y[0])**2 + (result_x[19]/result_x[0])**2)
+                            error_lumi = abs_lumi * expected_lumi
+                            
+                            rel_lumi= (error_lumi/expected_lumi)*100
+                            
+
+                            rel_error_on_lumi = np.append(rel_error_on_lumi,rel_lumi)
+ 
+
+                            histogram(100,0,3,rel_error_on_lumi,"rel_error_on_lumi","plots/rel_error_on_lumi.png","rel_error_on_luminosity[%]")
+
+
 
                             # figure of merit
 
@@ -1780,6 +1781,65 @@ for filename in fit_pickle:
                             histogram(100,-0.1,0.1,abs_error_on_m2_x,"abs_error_on_m2_x","plots/abs_error_on_m2_x.png","abs_error_on_m2_x")
 
 
+################# for Y scan
+
+
+                        # relative error on a1   
+                            rel_error_on_a1_y = np.append(rel_error_on_a1_y, result_y[7])
+                        # histogram
+                            histogram(100,0,2,rel_error_on_a1_y,"rel_error_on_a1_y","plots/rel_error_on_a1_y.png","rel_error_on_a1_y[%]")
+                        
+                        
+                        # relative error on a2
+                            rel_error_on_a2_y = np.append(rel_error_on_a2_y, result_y[8])
+                        # histogram
+                            histogram(100,0,3,rel_error_on_a2_y,"rel_error_on_a2_y","plots/rel_error_on_a2_y.png","rel_error_on_a2_y[%]")
+
+
+
+                        # relative error on s1    
+                            rel_error_on_s1_y = np.append(rel_error_on_s1_y, result_y[9])
+                        # histogram
+                            histogram(100,0,4,rel_error_on_s1_y,"rel_error_on_s1_y","plots/rel_error_on_s1_y.png","rel_error_on_s1_y[%]")
+                        
+                        
+                        # relative error on s2
+                            rel_error_on_s2_y = np.append(rel_error_on_s2_y, result_y[10])
+                        # histogram
+                            histogram(100,0,4,rel_error_on_s2_y,"rel_error_on_s2_y","plots/rel_error_on_s2_y.png","rel_error_on_s2_y[%]")
+                             
+                        # absolute error on the m1
+
+                            abs_error_on_m1_y = np.append(abs_error_on_m1_y, result_y[11])
+                        # histogram
+                            histogram(100,-0.1,0.1,abs_error_on_m1_y,"abs_error_on_m1_y","plots/abs_error_on_m1_y.png","abs_error_on_m1_y")
+                        
+                        
+                        # absolute error on m2
+                            abs_error_on_m2_y = np.append(abs_error_on_m2_y, result_y[12])
+                        # histogram
+                            histogram(100,-0.1,0.1,abs_error_on_m2_y,"abs_error_on_m2_y","plots/abs_error_on_m2_y.png","abs_error_on_m2_y")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         # here i am plotting the values for the paramters
 
 
@@ -1819,6 +1879,48 @@ for filename in fit_pickle:
                             fit_M2_x =np.append(fit_M2_x,result_x[18])
 
                             histogram(100,-0.1,0.1,fit_M2_x,"fit_M2_x","plots/fit_M2_x.png","fit_M2_x[value]")
+
+
+
+
+                            ########### y scans paramters
+
+
+                            fit_A1_y =np.append(fit_A1_y,result_y[13])
+                            histogram(100,0.0,5,fit_A1_y,"fit_A1_y","plots/fit_A1_y.png","fit_A1_y[value]")
+
+
+
+                            #A2
+                            fit_A2_y =np.append(fit_A2_y,result_y[14])
+                            histogram(100,0.0,5,fit_A2_y,"fit_A2_y","plots/fit_A2_y.png","fit_A2_y[value]")
+                            
+                            comp_histogram(100,0.0,10,fit_A1_y,fit_A2_y,"plots/fit_A1A2_y.png")
+                            
+                            
+
+
+                            # S1
+                            fit_S1_y =np.append(fit_S1_y,result_y[15])
+                            histogram(100,0.01,0.09,fit_S1_y,"fit_S1_y","plots/fit_S1_y.png","fit_S1_y[value]")
+                            
+                            # S1
+                            fit_S2_y =np.append(fit_S2_y,result_y[16])
+
+                            histogram(100,0.01,0.09,fit_S2_y,"fit_S2_y","plots/fit_S2_y.png","fit_S2_y[value]")
+
+                            comp_histogram(100,0.0,10,fit_S1_y,fit_S2_y,"plots/fit_S1S2_y.png")
+
+
+                            # M1
+                            fit_M1_y =np.append(fit_M1_y,result_y[17])
+
+                            histogram(100,-0.1,0.1,fit_M1_y,"fit_M1_y","plots/fit_M1_y.png","fit_M1_y[value]")
+
+                            #M2
+                            fit_M2_y =np.append(fit_M2_y,result_y[18])
+
+                            histogram(100,-0.1,0.1,fit_M2_y,"fit_M2_y","plots/fit_M2_y.png","fit_M2_y[value]")
 
 
 
