@@ -10,8 +10,11 @@ import os.path
 import pickle
 import sys
 import glob
-#from emittance_scan import *
-#from emittanceScan import analyse_scan
+
+
+
+
+# fit function
 
 def one_dimension_double_gauss_fit(x, p):
 
@@ -117,15 +120,6 @@ def comp_histogram(bin,low,up,fill1,fill2,hist_path):
 
 
 
-# def legend(header,fit,graph_data):
-
-#     leg = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
-#     leg.SetHeader(header)
-#     leg.AddEntry(graph_data,"data","P")
-#     leg.AddEntry(fit,"fit","L")
-
-#     leg.SetTextSize(0.03)
-#     leg.Draw()
 
 
     
@@ -168,10 +162,6 @@ def graph_2_canvas_1(graph_1,graph_2,title1_x,title1_y,title2_x,title2_y):
     canvas.cd(2)
     graph_cosmetics(graph_2,4,1.2,title2_x,title2_y)
     graph_2.Draw("AP")
-
-
-
-        # line                                                                                                                   \
                                                                                                                                   
     return canvas
 
@@ -190,26 +180,15 @@ def parameter_info(fit,parameter):
 
 
 
+def lengend(l,m,n,o,entry1,label11,label12,leg_size,latex,color):
+    leg=ROOT.TLegend(l,m,n,o)
+    leg.AddEntry(entry1,label11,label12)
+#    leg.AddEntry(entry1,label11,label12)
+    leg.SetTextSize(leg_size)
+    label = ROOT.TLatex()
+    label.SetTextSize(label_size)
+    label.DrawLatexNDC(0.75,0.90,latex)
+    label.SetTextColor(color)
+    leg.Draw()
 
-# def initialparameter(fit, Amp1, Amp2, Mean1, Mean2 ,Sigma1, Sigma2 ):
-
-#     fit.SetParameter(0,Amp1)#amplitude                                                                                        
-#     fit.SetParameter(3,Amp2)#amp                                                                                              
-#     fit.SetParameter(4,Sigma2)#sigma2                                                                                         
-#     fit.SetParameter(1,Mean1)#mean1                                                                                           
-#     fit.SetParameter(2,Sigma1)#sigma1                                                                                         
-#     fit.SetParameter(5,Mean1)#mean                                                                                    
-
-
-# def SetInitialParameters(Fit,RunNumber,xscan,Early,amplitude,sigma,mean):
-
-
-
-#     if RunNumber==350013:
-#         if Early and not xscan:
-#             initialparameter(Fit, 0.3*amplitude, 0.9*amplitude, mean, mean, sigma, 1.3*sigma)
-#         if not Early and xscan:
-#             initialparameter(Fit, 0.711, 0.24, -mean*0.1, mean*0.5, 0.0015, 0.5)
-
-        
 

@@ -23,7 +23,7 @@ import sys
 import glob
 
 
-print "it will work"
+
 
 def initialparameter(fit, Amp1, Amp2, Mean1, Mean2 ,Sigma1, Sigma2 ):
 

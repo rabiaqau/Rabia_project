@@ -243,6 +243,9 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     
 
 
+
+
+
     # tgraph for the difference in luminosity
     tgraphErrors_luminosity_diff = ROOT.TGraphErrors(len(separations),separations, luminosity_diffVector ,np.zeros(len(separations)), error)
 
@@ -251,6 +254,7 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     # calling function for 2 canvases(Functions.py)
     tgraph_canvas=graph_2_canvas_1(graph,tgraphErrors_luminosity_diff,"separation","mu","separation","lumi[data]-lumi[fit]")
 
+    tgraph_canvas.Update()
 
 
 
@@ -621,7 +625,7 @@ for filename in fit_pickle:
 
                         if result_x[5] == 3 and result_y[5]==3: ## covariance matrix cut
 
-                            if result_x[1]<4 and result_y[1]<4:#chi/ndf cut
+                            if result_x[1]<7 and result_y[1]<7:#chi/ndf cut
 
 
                                 #chi2/ndf X scan
@@ -629,12 +633,12 @@ for filename in fit_pickle:
 
                                 print len(chi2_NDF_x),"chi/ndf"
 
-                                histogram(100,0,4,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi_NDF_x")
+                                histogram(100,0,20,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi2/NDF_x")
 
 
                                 #chi2/ndf Y scan
                                 chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
-                                histogram(100,0,4,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi_NDF_y")
+                                histogram(100,0,20,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi2/NDF_y")
 
                                 # peak x relative error
                                 relative_error_peak_x = (result_x[6]/result_x[2])*100
@@ -642,6 +646,14 @@ for filename in fit_pickle:
                                 rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
                                 # histogram
                                 histogram(100,0,0.5,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
+
+                                
+                                relative_error_peak_y = (result_y[6]/result_y[2])*100
+                                # appending peak x array
+                                rel_error_on_peak_y = np.append(rel_error_on_peak_y,relative_error_peak_y)
+                                # histogram
+                                histogram(100,0,0.5,rel_error_on_peak_y,"rel_error_on_peak_y","plots/rel_error_on_peak_y.png","rel_error_on_peak_y[%]")
+
 
                         
 
