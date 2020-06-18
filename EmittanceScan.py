@@ -535,10 +535,6 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
 
-
-
-
-
            
         return Capsigma, peak, error_on_peak,Capsigma_error
 
@@ -554,12 +550,16 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     error_Capsigma=sigma_fit[3]
 
     
-
+    # returning the values of analyse_scan
     return lumi_sigma, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix , error_peak, error_Capsigma
 
 
 
-#### empty array portion
+
+
+
+
+#### empty arrays
 
 
 chi2_NDF_x=np.array([])
@@ -580,11 +580,6 @@ rel_error_capsigma_y=np.array([])
 
 
 
-
-
-
-
-# chi_NDF_early_x
 
 for filename in fit_pickle:
     with open(filename,'rb') as fit_pickle:
@@ -632,56 +627,56 @@ for filename in fit_pickle:
 
                 if result_x[4]==0 and result_y[4]==0 :# converge fit
              
-                    if result_x[4]==0 and result_y[4]==0 :# converge fit
+                    
+                    if result_x[5] == 3 and result_y[5]==3: ## covariance matrix cut
 
-                        if result_x[5] == 3 and result_y[5]==3: ## covariance matrix cut
-
-                            if result_x[1]<7 and result_y[1]<7:#chi/ndf cut
+                        
+                        if result_x[1]<7 and result_y[1]<7:#chi/ndf cut
 
 
                                 #chi2/ndf X scan
-                                chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
+                            chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
 
-                                print len(chi2_NDF_x),"chi/ndf"
+                            print len(chi2_NDF_x),"chi/ndf"
 
-                                histogram(100,0,20,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi2/NDF_x")
+                            histogram(100,0,20,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi2/NDF_x")
 
 
                                 #chi2/ndf Y scan
-                                chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
-                                histogram(100,0,20,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi2/NDF_y")
+                            chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
+                            histogram(100,0,20,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi2/NDF_y")
 
                                 # peak x relative error
-                                relative_error_peak_x = (result_x[6]/result_x[2])*100
+                            relative_error_peak_x = (result_x[6]/result_x[2])*100
                                 # appending peak x array
-                                rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
+                            rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
                                 # histogram
-                                histogram(100,0,0.5,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
+                            histogram(100,0,0.5,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
 
                                 
-                                relative_error_peak_y = (result_y[6]/result_y[2])*100
+                            relative_error_peak_y = (result_y[6]/result_y[2])*100
                                 # appending peak x array
-                                rel_error_on_peak_y = np.append(rel_error_on_peak_y,relative_error_peak_y)
+                            rel_error_on_peak_y = np.append(rel_error_on_peak_y,relative_error_peak_y)
                                 # histogram
-                                histogram(100,0,0.5,rel_error_on_peak_y,"rel_error_on_peak_y","plots/rel_error_on_peak_y.png","rel_error_on_peak_y[%]")
+                            histogram(100,0,0.5,rel_error_on_peak_y,"rel_error_on_peak_y","plots/rel_error_on_peak_y.png","rel_error_on_peak_y[%]")
 
 
                         
 
 
                                 # sigma error
-                                rel_sigma_x = (result_x[7]/result_x[0])*100
-                                rel_error_capsigma_x = np.append(rel_error_capsigma_x,rel_sigma_x)
+                            rel_sigma_x = (result_x[7]/result_x[0])*100
+                            rel_error_capsigma_x = np.append(rel_error_capsigma_x,rel_sigma_x)
                                 # histogram
 
-                                histogram(100,0,3,rel_error_capsigma_x,"rel_error_on_sigma_x","plots/rel_error_on_sigma_x.png","rel_error_on_sigma_x[%]")
+                            histogram(100,0,3,rel_error_capsigma_x,"rel_error_on_sigma_x","plots/rel_error_on_sigma_x.png","rel_error_on_sigma_x[%]")
 
 
                                 # y scan sigma
-                                rel_sigma_y = (result_y[7]/result_y[0])*100
-                                rel_error_capsigma_y = np.append(rel_error_capsigma_y,rel_sigma_y)
+                            rel_sigma_y = (result_y[7]/result_y[0])*100
+                            rel_error_capsigma_y = np.append(rel_error_capsigma_y,rel_sigma_y)
 
-                                histogram(100,0,3,rel_error_capsigma_y,"rel_error_on_sigma_y","plots/rel_error_on_sigma_y.png","rel_error_on_sigma_y[%]")
+                            histogram(100,0,3,rel_error_capsigma_y,"rel_error_on_sigma_y","plots/rel_error_on_sigma_y.png","rel_error_on_sigma_y[%]")
 
 
 
