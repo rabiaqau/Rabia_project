@@ -25,9 +25,9 @@ from sympy import exp
 # importing pickle files
 
 
-#fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_349481.pickle"))
+fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_349481.pickle"))
 
-fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
+#fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
 
 
 
@@ -294,6 +294,9 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     corr= status.GetCorrelationMatrix ()                                                                             
 
 
+
+    ### elements of Covariance matrix            
+  
     # 0 amp1
     # 1 mean1
     # 2 sigma1
@@ -302,23 +305,29 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     # 5 mean2
 
 
+    # i am defining a dictionary to use it latter for calculating the error on FOM
+    
+    covariance_element=dict()
 
-    ### elements of Covariance matrix                                                                                
-    cov_amp1_mean1 = cov(0,1)#1                                                                                                 
-    cov_amp1_sigma1 = cov(0,2)#2                                                                                                 
-    cov_amp1_amp2 = cov(0,3)#3                                                                                                 
-    cov_amp1_sigma2 = cov(0,4)#4                                                                                                 
-    cov_amp1_mean2 = cov(0,5)#5                                                                                                 
-    cov_mean1_sigma1 = cov(1,2)#6                                                                                                 
-    cov_mean1_amp2 = cov(1,3)#7                                                                                                 
-    cov_mean1_sigma2 = cov(1,4)#8                                                                                                 
-    cov_mean1_mean2 = cov(1,5)#9                                                                                                 
-    cov_sigma1_amp2 = cov(2,3)#10                                                                                                
-    cov_sigma1_sigma2 = cov(2,4)#11                                                                                                
-    cov_sigma1_mean2 = cov(2,5)#12                                                                                                
-    cov_amp2_sigma2 = cov(3,4)#13                                                                                                
-    cov_amp2_mean2 = cov(3,5)#14                                                                                                
-    cov_sigma2_mean2 = cov(4,5)#15                     
+    covariance_element['cov_amp1_mean1'] = cov(0,1)#1
+
+    covariance_element['cov_amp1_sigma1'] = cov(0,2)#2
+
+    covariance_element['cov_amp1_amp2'] = cov(0,3)#3
+    
+    covariance_element['cov_amp1_sigma2'] = cov(0,4)#4                                                                                                 
+    covariance_element['cov_amp1_mean2'] = cov(0,5)#5                                                                                                 
+    covariance_element['cov_mean1_sigma1'] = cov(1,2)#6                                                                                                 
+    covariance_element['cov_mean1_amp2'] = cov(1,3)#7                                                                                                 
+    covariance_element['cov_mean1_sigma2'] = cov(1,4)#8                                                                                                 
+    covariance_element['cov_mean1_mean2'] = cov(1,5)#9                                                                                                 
+    covariance_element['cov_sigma1_amp2'] = cov(2,3)#10                                                                                                
+    covariance_element['cov_sigma1_sigma2'] = cov(2,4)#11                                                                                                
+    covariance_element['cov_sigma1_mean2'] = cov(2,5)#12                                                                                                
+    covariance_element['cov_amp2_sigma2'] = cov(3,4)#13                                                                                                
+    covariance_element['cov_amp2_mean2'] = cov(3,5)#14                                                                                                
+    covariance_element['cov_sigma2_mean2'] = cov(4,5)#15                     
+
 
 
                                                                            
@@ -408,6 +417,9 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
         ## here i am calling the derivative function to take derivative of peak
 
+
+
+
          # value of amplitude 1
         Value_der_peak_amplitude1 = derivative_peak_amplitude.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value,x:Xmax})
 
@@ -419,6 +431,8 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
          # value of amplitude 2
         Value_der_peak_amplitude2 = derivative_peak_amplitude.evalf(subs={amplitude:amplitude2_value,sigma:sigma2_value,mean:mean2_value,x:Xmax})
 #        print Value_der_peak_amplitude2,"Value_der_peak_amplitude2"
+
+
 
 
 
@@ -452,6 +466,8 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
 
+
+
         # dignol elements of peak
 
         diagnol_peak_terms = ( amplitude1_error * Value_der_peak_amplitude1 )**2 + ( amplitude2_error * Value_der_peak_amplitude2 )**2 + ( sigma1_error * Value_der_peak_sigma1 )**2 + ( sigma2_error * Value_der_peak_sigma2 )**2 + ( mean1_error * Value_der_peak_mean1 )**2 + ( mean2_error * Value_der_peak_mean2 )**2
@@ -459,10 +475,26 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
         # off diagnol function
         
-        off_diagnol_peak_terms = offdiagnol(Value_der_peak_amplitude1, Value_der_peak_sigma1, Value_der_peak_mean1,Value_der_peak_amplitude2, Value_der_peak_sigma2, Value_der_peak_mean2,cov_amp1_mean1,  cov_amp1_sigma1, cov_amp1_amp2, cov_amp1_sigma2, cov_amp1_mean2, cov_mean1_sigma1, cov_mean1_amp2, cov_mean1_sigma2, cov_mean1_mean2, cov_sigma1_amp2, cov_sigma1_sigma2, cov_sigma1_mean2, cov_amp2_sigma2, cov_amp2_mean2, cov_sigma2_mean2 )
+        off_diagnol_peak_terms = offdiagnol(Value_der_peak_amplitude1, Value_der_peak_sigma1, Value_der_peak_mean1,Value_der_peak_amplitude2, Value_der_peak_sigma2, Value_der_peak_mean2,covariance_element['cov_amp1_mean1'], covariance_element['cov_amp1_sigma1'],covariance_element['cov_amp1_amp2'],covariance_element['cov_amp1_sigma2'],covariance_element['cov_amp1_mean2'],covariance_element['cov_mean1_sigma1'],covariance_element['cov_mean1_amp2'], covariance_element['cov_mean1_sigma2'],covariance_element['cov_mean1_mean2'],covariance_element['cov_sigma1_amp2'],covariance_element['cov_sigma1_sigma2'], covariance_element['cov_sigma1_mean2'],covariance_element['cov_amp2_sigma2'], covariance_element['cov_amp2_mean2'],covariance_element['cov_sigma2_mean2'] )
 
 
+
+        # here is the error on peak
         error_on_peak = math.sqrt( diagnol_peak_terms  + off_diagnol_peak_terms )  
+
+
+        #### now its time to store the values of all determinants of peak in a dictionary so that i can use it for 
+        ####   determining the error on FOM (you will see) :)
+        derivative_of_peak = dict()
+        derivative_of_peak['der_peak_amplitude1'] = Value_der_peak_amplitude1
+        derivative_of_peak['der_peak_amplitude2']=Value_der_peak_amplitude2
+        derivative_of_peak['der_peak_sigma1']=Value_der_peak_sigma1
+        derivative_of_peak['der_peak_sigma2']=Value_der_peak_sigma2
+        derivative_of_peak['der_peak_mean1']=Value_der_peak_mean1
+        derivative_of_peak['der_peak_mean2']=Value_der_peak_mean2
+
+        
+
 
 
 #        print error_on_peak,"error on peak"
@@ -514,7 +546,10 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
         # off diagnol capsigma terms
-        off_diagnol_Capsigma_terms = offdiagnol(Value_der_Capsigma_amplitude1, Value_der_Capsigma_sigma1, Value_der_Capsigma_mean1,Value_der_Capsigma_amplitude2, Value_der_Capsigma_sigma2, Value_der_Capsigma_mean2,cov_amp1_mean1,  cov_amp1_sigma1, cov_amp1_amp2, cov_amp1_sigma2, cov_amp1_mean2, cov_mean1_sigma1, cov_mean1_amp2, cov_mean1_sigma2, cov_mean1_mean2, cov_sigma1_amp2, cov_sigma1_sigma2, cov_sigma1_mean2, cov_amp2_sigma2, cov_amp2_mean2, cov_sigma2_mean2 )
+        off_diagnol_Capsigma_terms = offdiagnol(Value_der_Capsigma_amplitude1, Value_der_Capsigma_sigma1, Value_der_Capsigma_mean1,Value_der_Capsigma_amplitude2, Value_der_Capsigma_sigma2, Value_der_Capsigma_mean2,covariance_element['cov_amp1_mean1'], covariance_element['cov_amp1_sigma1'],covariance_element['cov_amp1_amp2'],covariance_element['cov_amp1_sigma2'],covariance_element['cov_amp1_mean2'],covariance_element['cov_mean1_sigma1'],covariance_element['cov_mean1_amp2'], covariance_element['cov_mean1_sigma2'],covariance_element['cov_mean1_mean2'],covariance_element['cov_sigma1_amp2'],covariance_element['cov_sigma1_sigma2'], covariance_element['cov_sigma1_mean2'],covariance_element['cov_amp2_sigma2'], covariance_element['cov_amp2_mean2'],covariance_element['cov_sigma2_mean2'] )
+
+
+
 
 
 
@@ -534,24 +569,66 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
         Capsigma_error = math.sqrt(off_diagnol_Capsigma_terms + diagnol_Capsigma_terms )
 
 
+        # its time to store the values of cap sigma derivatives w.r.t parameters in a dictionary
 
-           
-        return Capsigma, peak, error_on_peak,Capsigma_error
+        derivative_of_Capsigma = dict()
+        derivative_of_Capsigma['der_Capsigma_amplitude1']=Value_der_Capsigma_amplitude1
+        derivative_of_Capsigma['der_Capsigma_amplitude2']=Value_der_Capsigma_amplitude2
+        derivative_of_Capsigma['der_Capsigma_sigma1']=Value_der_Capsigma_sigma1
+        derivative_of_Capsigma['der_Capsigma_sigma2']=Value_der_Capsigma_sigma2
+        derivative_of_Capsigma['der_Capsigma_mean1']=Value_der_Capsigma_mean1
+        derivative_of_Capsigma['der_Capsigma_mean2']=Value_der_Capsigma_mean2
+        
+
+
+
+
+
+        return Capsigma, peak, error_on_peak,Capsigma_error, derivative_of_peak, derivative_of_Capsigma
 
 
     # calling the cap_sigma fucntion
 
 
     sigma_fit = cap_sigma()
-    lumi_sigma = sigma_fit[0]
+
+    # sigma for luminosity
+    sigma_for_luminosity = sigma_fit[0]
+
+    # peak
     peak =  sigma_fit[1]
+
+    # error on peak
     error_peak= sigma_fit[2]
 
+
+    # error on cap sigma
     error_Capsigma=sigma_fit[3]
 
-    
+    # peak derivative dictionary 
+    peak_derivative_dict = sigma_fit[4]
+
+    # derivative of cap sigma
+    derivative_of_Capsigma = sigma_fit[5]
+
+
+
+
+    # 0 --> sigma for luminosity
+    # 1 --> chi/ndf_double gaussian fit
+    # 2 -->peak
+    # 3 --> chi2 double gauss fit
+    # 4 --> status of fit
+    # 5 --> status of covariance matrix
+    # 6 --> peak error
+    # 7 --> error for cap sigma
+    # 8 --> covariance element
+    # 9 --> dictionary for derivative of peak
+    # 10 --> dictionary for derivative of cap sigma
+
+
     # returning the values of analyse_scan
-    return lumi_sigma, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix , error_peak, error_Capsigma
+    return sigma_for_luminosity, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix , error_peak, error_Capsigma, covariance_element, peak_derivative_dict, derivative_of_Capsigma
 
 
 
@@ -634,10 +711,26 @@ for filename in fit_pickle:
                         if result_x[1]<7 and result_y[1]<7:#chi/ndf cut
 
 
+
+                            # 8 --> covariance element
+                            # 9 --> dictionary for derivative of peak
+                            # 10 --> dictionary for derivative of cap sigma
+
+
+
+
+                            print result_x[8]
+                            print result_x[9]
+                            print result_x[10]
+
+
+
+                           
+
                                 #chi2/ndf X scan
                             chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
 
-                            print len(chi2_NDF_x),"chi/ndf"
+#                            print len(chi2_NDF_x),"chi/ndf"
 
                             histogram(100,0,20,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi2/NDF_x")
 
