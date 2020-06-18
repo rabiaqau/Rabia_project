@@ -698,9 +698,11 @@ for filename in fit_pickle:
 
             # selection of the scans
             
-            #xscans 
+
+
 
             if output['bunches'] >2000: # bunches cut
+
 
                 if result_x[4]==0 and result_y[4]==0 :# converge fit
              
@@ -712,22 +714,9 @@ for filename in fit_pickle:
 
 
 
-                            # 8 --> covariance element
-                            # 9 --> dictionary for derivative of peak
-                            # 10 --> dictionary for derivative of cap sigma
-
-
-
-
-                            print result_x[8]
-                            print result_x[9]
-                            print result_x[10]
-
-
-
                            
 
-                                #chi2/ndf X scan
+                            #chi2/ndf X scan
                             chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
 
 #                            print len(chi2_NDF_x),"chi/ndf"
@@ -735,26 +724,36 @@ for filename in fit_pickle:
                             histogram(100,0,20,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi2/NDF_x")
 
 
-                                #chi2/ndf Y scan
+                            #chi2/ndf Y scan
                             chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
                             histogram(100,0,20,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi2/NDF_y")
 
-                                # peak x relative error
+
+
+
+                            # peak x relative error
                             relative_error_peak_x = (result_x[6]/result_x[2])*100
-                                # appending peak x array
+
+
+                            # appending peak x array
                             rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
-                                # histogram
+                            # histogram
                             histogram(100,0,0.5,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
 
-                                
+
+
+                            
+
+                            # peak y
                             relative_error_peak_y = (result_y[6]/result_y[2])*100
-                                # appending peak x array
+                            # appending peak x array
                             rel_error_on_peak_y = np.append(rel_error_on_peak_y,relative_error_peak_y)
-                                # histogram
+                            # histogram
                             histogram(100,0,0.5,rel_error_on_peak_y,"rel_error_on_peak_y","plots/rel_error_on_peak_y.png","rel_error_on_peak_y[%]")
 
 
                         
+
 
 
                                 # sigma error
@@ -763,6 +762,10 @@ for filename in fit_pickle:
                                 # histogram
 
                             histogram(100,0,3,rel_error_capsigma_x,"rel_error_on_sigma_x","plots/rel_error_on_sigma_x.png","rel_error_on_sigma_x[%]")
+
+
+
+
 
 
                                 # y scan sigma
@@ -776,224 +779,64 @@ for filename in fit_pickle:
 
 
 
+                            
+                            # now expected luminosity
+                            
+                            luminosity_of_beam =expected_luminosity(result_x[0],result_y[0],product)
+
+
+
+                            # error on lumi
+                            absolute_luminosity = math.sqrt((result_y[7]/result_y[0])**2 + (result_x[7]/result_x[0])**2)
+
+
+
+                            # error in luminsoity
+                            error_on_luminosity = absolute_luminosity * luminsoity_of_beam
+
 
                             
-#                             # now expected luminosity
-                            
-#                             expected_lumi =expected_luminosity(result_x[0],result_y[0],product)
-
-
-
-#                             ## error on lumi
-#                             abs_lumi = math.sqrt((result_y[19]/result_y[0])**2 + (result_x[19]/result_x[0])**2)
-#                             error_lumi = abs_lumi * expected_lumi
-                            
-#                             rel_lumi= (error_lumi/expected_lumi)*100
+                            # relative luminosity
+                            relative_luminosity= (error_on_luminosity/luminosity_of_beam)*100
                             
 
-#                             rel_error_on_lumi = np.append(rel_error_on_lumi,rel_lumi)
+                            # relative lumisnoity array
+                            rel_error_on_lumi = np.append(rel_error_on_lumi,rel_lumi)
  
+                            #histogram
 
-#                             histogram(100,0,3,rel_error_on_lumi,"rel_error_on_lumi","plots/rel_error_on_lumi.png","rel_error_on_luminosity[%]")
-
-
-
-#                             # figure of merit
-
-#                             Figure_of_merit= result_x[2]/expected_lumi
-
-#                             # appending
-#                             FOM=np.append(FOM,Figure_of_merit)
-#                             # histogram
-#                             histogram(100,0.9,1.05,FOM,"FOM","plots/FOM.png","Figure of merit(peak/lumi)")
-
-#                         # here i will plot relative errors on all paramters
-
-
-#                         # relative error on a1   
-#                             rel_error_on_a1_x = np.append(rel_error_on_a1_x, result_x[7])
-#                         # histogram
-#                             histogram(100,0,2,rel_error_on_a1_x,"rel_error_on_a1_x","plots/rel_error_on_a1_x.png","rel_error_on_a1_x[%]")
-                        
-                        
-#                         # relative error on a2
-#                             rel_error_on_a2_x = np.append(rel_error_on_a2_x, result_x[8])
-#                         # histogram
-#                             histogram(100,0,3,rel_error_on_a2_x,"rel_error_on_a2_x","plots/rel_error_on_a2_x.png","rel_error_on_a2_x[%]")
-
-
-
-#                         # relative error on s1    
-#                             rel_error_on_s1_x = np.append(rel_error_on_s1_x, result_x[9])
-#                         # histogram
-#                             histogram(100,0,4,rel_error_on_s1_x,"rel_error_on_s1_x","plots/rel_error_on_s1_x.png","rel_error_on_s1_x[%]")
-                        
-                        
-#                         # relative error on s2
-#                             rel_error_on_s2_x = np.append(rel_error_on_s2_x, result_x[10])
-#                         # histogram
-#                             histogram(100,0,4,rel_error_on_s2_x,"rel_error_on_s2_x","plots/rel_error_on_s2_x.png","rel_error_on_s2_x[%]")
-                             
-#                         # absolute error on the m1
-
-#                             abs_error_on_m1_x = np.append(abs_error_on_m1_x, result_x[11])
-#                         # histogram
-#                             histogram(100,-0.1,0.1,abs_error_on_m1_x,"abs_error_on_m1_x","plots/abs_error_on_m1_x.png","abs_error_on_m1_x")
-                        
-                        
-#                         # absolute error on m2
-#                             abs_error_on_m2_x = np.append(abs_error_on_m2_x, result_x[12])
-#                         # histogram
-#                             histogram(100,-0.1,0.1,abs_error_on_m2_x,"abs_error_on_m2_x","plots/abs_error_on_m2_x.png","abs_error_on_m2_x")
-
-
-# ################# for Y scan
-
-
-#                         # relative error on a1   
-#                             rel_error_on_a1_y = np.append(rel_error_on_a1_y, result_y[7])
-#                         # histogram
-#                             histogram(100,0,2,rel_error_on_a1_y,"rel_error_on_a1_y","plots/rel_error_on_a1_y.png","rel_error_on_a1_y[%]")
-                        
-                        
-#                         # relative error on a2
-#                             rel_error_on_a2_y = np.append(rel_error_on_a2_y, result_y[8])
-#                         # histogram
-#                             histogram(100,0,3,rel_error_on_a2_y,"rel_error_on_a2_y","plots/rel_error_on_a2_y.png","rel_error_on_a2_y[%]")
-
-
-
-#                         # relative error on s1    
-#                             rel_error_on_s1_y = np.append(rel_error_on_s1_y, result_y[9])
-#                         # histogram
-#                             histogram(100,0,4,rel_error_on_s1_y,"rel_error_on_s1_y","plots/rel_error_on_s1_y.png","rel_error_on_s1_y[%]")
-                        
-                        
-#                         # relative error on s2
-#                             rel_error_on_s2_y = np.append(rel_error_on_s2_y, result_y[10])
-#                         # histogram
-#                             histogram(100,0,4,rel_error_on_s2_y,"rel_error_on_s2_y","plots/rel_error_on_s2_y.png","rel_error_on_s2_y[%]")
-                             
-#                         # absolute error on the m1
-
-#                             abs_error_on_m1_y = np.append(abs_error_on_m1_y, result_y[11])
-#                         # histogram
-#                             histogram(100,-0.1,0.1,abs_error_on_m1_y,"abs_error_on_m1_y","plots/abs_error_on_m1_y.png","abs_error_on_m1_y")
-                        
-                        
-#                         # absolute error on m2
-#                             abs_error_on_m2_y = np.append(abs_error_on_m2_y, result_y[12])
-#                         # histogram
-#                             histogram(100,-0.1,0.1,abs_error_on_m2_y,"abs_error_on_m2_y","plots/abs_error_on_m2_y.png","abs_error_on_m2_y")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# #                        here i am plotting the values for the paramters
-
-
-#                             #A1
-#                             fit_A1_x =np.append(fit_A1_x,result_x[13])
-#                             histogram(100,0.0,5,fit_A1_x,"fit_A1_x","plots/fit_A1_x.png","fit_A1_x[value]")
-
-
-
-#                             #A2
-#                             fit_A2_x =np.append(fit_A2_x,result_x[14])
-#                             histogram(100,0.0,5,fit_A2_x,"fit_A2_x","plots/fit_A2_x.png","fit_A2_x[value]")
                             
-#                             comp_histogram(100,0.0,10,fit_A1_x,fit_A2_x,"plots/fit_A1A2_x.png")
-                            
+                            histogram(100,0,3,rel_error_on_lumi,"rel_error_on_lumi","plots/rel_error_on_lumi.png","rel_error_on_luminosity[%]")
+
+
+
+                           # figure of merit
+
+                            Figure_of_Merit= result_x[2] / luminosity_of_beam
+
+                            # appending
+
+                            FOM=np.append(FOM,Figure_of_merit)
+
+
+                             # histogram
+                            histogram(100,0.9,1.05,FOM,"FOM","plots/FOM.png","Figure of merit(peak/lumi)")
+
+
+
+
                             
 
 
-#                             # S1
-#                             fit_S1_x =np.append(fit_S1_x,result_x[15])
-#                             histogram(100,0.01,0.09,fit_S1_x,"fit_S1_x","plots/fit_S1_x.png","fit_S1_x[value]")
-                            
-#                             # S1
-#                             fit_S2_x =np.append(fit_S2_x,result_x[16])
-
-#                             histogram(100,0.01,0.09,fit_S2_x,"fit_S2_x","plots/fit_S2_x.png","fit_S2_x[value]")
-
-#                             comp_histogram(100,0.0,10,fit_S1_x,fit_S2_x,"plots/fit_S1S2_x.png")
-
-
-#                             # M1
-#                             fit_M1_x =np.append(fit_M1_x,result_x[17])
-
-#                             histogram(100,-0.1,0.1,fit_M1_x,"fit_M1_x","plots/fit_M1_x.png","fit_M1_x[value]")
-
-#                             #M2
-#                             fit_M2_x =np.append(fit_M2_x,result_x[18])
-
-#                             histogram(100,-0.1,0.1,fit_M2_x,"fit_M2_x","plots/fit_M2_x.png","fit_M2_x[value]")
-
-
-
-
-#                             ########### y scans paramters
-
-
-#                             fit_A1_y =np.append(fit_A1_y,result_y[13])
-#                             histogram(100,0.0,5,fit_A1_y,"fit_A1_y","plots/fit_A1_y.png","fit_A1_y[value]")
-
-
-
-#                             #A2
-#                             fit_A2_y =np.append(fit_A2_y,result_y[14])
-#                             histogram(100,0.0,5,fit_A2_y,"fit_A2_y","plots/fit_A2_y.png","fit_A2_y[value]")
-                            
-#                             comp_histogram(100,0.0,10,fit_A1_y,fit_A2_y,"plots/fit_A1A2_y.png")
-                            
-                            
-
-
-#                             # S1
-#                             fit_S1_y =np.append(fit_S1_y,result_y[15])
-#                             histogram(100,0.01,0.09,fit_S1_y,"fit_S1_y","plots/fit_S1_y.png","fit_S1_y[value]")
-                            
-#                             # S1
-#                             fit_S2_y =np.append(fit_S2_y,result_y[16])
-
-#                             histogram(100,0.01,0.09,fit_S2_y,"fit_S2_y","plots/fit_S2_y.png","fit_S2_y[value]")
-
-#                             comp_histogram(100,0.0,10,fit_S1_y,fit_S2_y,"plots/fit_S1S2_y.png")
-
-
-#                             # M1
-#                             fit_M1_y =np.append(fit_M1_y,result_y[17])
-
-#                             histogram(100,-0.1,0.1,fit_M1_y,"fit_M1_y","plots/fit_M1_y.png","fit_M1_y[value]")
-
-#                             #M2
-#                             fit_M2_y =np.append(fit_M2_y,result_y[18])
-
-#                             histogram(100,-0.1,0.1,fit_M2_y,"fit_M2_y","plots/fit_M2_y.png","fit_M2_y[value]")
 
 
 
 
 
-                
-                    
+
+
+
+
 
 
 
@@ -1014,110 +857,3 @@ for filename in fit_pickle:
 
     
 
-            #             # relative error on a1
-
-            #             # relative error on the sigma or width
-
-
-
-
-
-
-
-
-            #             # fit parameters value
-            #             # x scan
-
-
-                        
-
-
-
-
-
-
-            # if result_y[4]==0:# converge fit
-
-            #     if output['bunches'] >2000: # bunches cut
-
-            #         if result_y[5] == 3: ## covariance matriy cut
-
-
-
-            #             if result_y[1]<4:
-
-            #             # relative erron on peak of y scan
-            #                 relative_error_peak_y = (result_y[6]/result_y[2])*100
-                        
-            #             # appending array
-            #                 rel_error_on_peak_y = np.append(rel_error_on_peak_y,relative_error_peak_y)
-                        
-            #             # histogram for the peak y
-            #                 histogram(100,0,1,rel_error_on_peak_y,"rel_error_on_peak_y","plots/rel_error_on_peak_y.png","rel_error_on_peak_y[%]")
-
-            #             # relative error on a1
-            #                 rel_error_on_a1_y = np.append(rel_error_on_a1_y, result_y[7])
-                       
-            #             # histogram
-            #                 histogram(100,0,50,rel_error_on_a1_y,"rel_error_on_a1_y","plots/rel_error_on_a1_y.png","rel_error_on_a1_y[%]")
-            #             # relative error on a2
-                        
-            #                 rel_error_on_a2_y = np.append(rel_error_on_a2_y, result_y[8])
-                            
-            #             # histogram
-            #                 histogram(100,0,50,rel_error_on_a2_y,"rel_error_on_a2_y","plots/rel_error_on_a2_y.png","rel_error_on_a2_y[%]")
-
-            #             # relative error on the sigma or width
-
-            #                 rel_error_on_s1_y = np.append(rel_error_on_s1_y, result_y[9])
-
-            #             # histogram
-            #                 histogram(100,0,20,rel_error_on_s1_y,"rel_error_on_s1_y","plots/rel_error_on_s1_y.png","rel_error_on_s1_y[%]")
-            #             # relative error on a2
-            #                 rel_error_on_s2_y = np.append(rel_error_on_s2_y, result_y[10])
- 
-            #            # histogram
-            #                 histogram(100,0,20,rel_error_on_s2_y,"rel_error_on_s2_y","plots/rel_error_on_s2_y.png","rel_error_on_s2_y[%]")
-
-            #             # absolute error on the m1
-
-            #                 abs_error_on_m1_y = np.append(abs_error_on_m1_y, result_y[11])
-            #             # histogram
-            #                 histogram(100,-0.0001,0.1,abs_error_on_m1_y,"abs_error_on_m1_y","plots/abs_error_on_m1_y.png","abs_error_on_m1_y[%]")
-                        
-                        
-            #             # absolute error on m2
-            #                 abs_error_on_m2_y = np.append(abs_error_on_m2_y, result_y[12])
-            #             # histogram
-            #                 histogram(100,-0.0001,0.1,abs_error_on_m2_y,"abs_error_on_m2_y","plots/abs_error_on_m2_y.png","abs_error_on_m2_y[%]")
-
-
-
-
-            #             # fit paramters y scan
-
-            #                 fit_A1_y =np.append(fit_A1_y,result_y[13])
-
-            #                 fit_A2_y =np.append(fit_A2_y,result_y[14])
-                            
-            #                 fit_S1_y =np.append(fit_S1_y,result_y[15])
-                            
-            #                 fit_S2_y =np.append(fit_S2_y,result_y[16])
-
-            #                 fit_M1_y =np.append(fit_M1_y,result_y[17])
-
-            #                 fit_M2_y =np.append(fit_M2_y,result_y[18])
-
-
-            #                 histogram(100,0,2,fit_A1_y,"fit_A1_y","plots/fit_A1_y.png","fit_A1_y[value]")
-                            
-            #                 histogram(100,0,2,fit_A2_y,"fit_A2_y","plots/fit_A2_y.png","fit_A2_y[value]")
-                        
-            #                 histogram(100,0.01,0.03,fit_S1_y,"fit_S1_y","plots/fit_S1_y.png","fit_S1_y[value]")
-                        
-            #                 histogram(100,0.01,0.04,fit_S2_y,"fit_S2_y","plots/fit_S2_y.png","fit_S2_y[value]")
-                        
-            #                 histogram(100,-0.1,0.1,fit_M1_y,"fit_M1_y","plots/fit_M1_y.png","fit_M1_y[value]")
-
-            #                 histogram(100,-0.1,0.1,fit_M2_y,"fit_M2_y","plots/fit_M2_y.png","fit_M2_y[value]")
-                        
