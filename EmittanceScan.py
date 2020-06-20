@@ -345,6 +345,7 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     amplitude1_info = parameter_info(double_gauss_fit,0)
     amplitude1_value =amplitude1_info[0]
     amplitude1_error =amplitude1_info[1]
+    print amplitude1_error
     amplitude1_rel_error =amplitude1_info[2]
 
     # amplitude2
@@ -638,7 +639,7 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 #### empty arrays
 
-
+FOM =np.array([])
 chi2_NDF_x=np.array([])
 chi2_NDF_y=np.array([])
 
@@ -653,7 +654,7 @@ rel_error_capsigma_y=np.array([])
 
 
 
-
+rel_error_on_lumi=np.array([])
 
 
 
@@ -691,7 +692,7 @@ for filename in fit_pickle:
             n2= np.mean(output['curr'][1])/output['bunches']
             
             # product of intensities
-            product = n1*n2
+            product_of_intensity = n1*n2
             
 
 
@@ -782,7 +783,7 @@ for filename in fit_pickle:
                             
                             # now expected luminosity
                             
-                            luminosity_of_beam =expected_luminosity(result_x[0],result_y[0],product)
+                            luminosity_of_beam =expected_luminosity(result_x[0],result_y[0],product_of_intensity)
 
 
 
@@ -792,16 +793,16 @@ for filename in fit_pickle:
 
 
                             # error in luminsoity
-                            error_on_luminosity = absolute_luminosity * luminsoity_of_beam
+                            error_on_luminosity = absolute_luminosity * luminosity_of_beam
 
 
                             
                             # relative luminosity
-                            relative_luminosity= (error_on_luminosity/luminosity_of_beam)*100
+                            relative_error_on_luminosity= (error_on_luminosity/luminosity_of_beam)*100
                             
 
                             # relative lumisnoity array
-                            rel_error_on_lumi = np.append(rel_error_on_lumi,rel_lumi)
+                            rel_error_on_lumi = np.append(rel_error_on_lumi,relative_error_on_luminosity)
  
                             #histogram
 
@@ -816,20 +817,20 @@ for filename in fit_pickle:
 
                             # appending
 
-                            FOM=np.append(FOM,Figure_of_merit)
+                            FOM=np.append(FOM,Figure_of_Merit)
 
 
                              # histogram
                             histogram(100,0.9,1.05,FOM,"FOM","plots/FOM.png","Figure of merit(peak/lumi)")
 
-
-
-
                             
 
 
+                            
+                            
+                            der_FOM_amplitude1= diagnol_FOM(result_x[9]['der_peak_amplitude1'],product_of_intensity, luminosity_of_beam ,result_x[0],result_y[0],result_x[10]['der_Capsigma_amplitude1'],result_y[10]['der_Capsigma_amplitude1'])
 
-
+                            print der_FOM_amplitude1,"der_FOM_amplitude1"
 
 
 
