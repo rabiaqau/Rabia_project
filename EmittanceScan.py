@@ -15,21 +15,23 @@ import sys
 import glob
 from Functions import *
 from InitialParameters import *
-from derivative import *
+from peak_derivative import *
 import sympy as sym
 import math
 from sympy import exp
+from sigma_derivative import *
+
+
+
 
 
 
 # importing pickle files
 
 
-fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_349481.pickle"))
+#fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_350220.pickle"))
 
-#fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
-
-
+fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
 
 
 
@@ -345,8 +347,10 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     amplitude1_info = parameter_info(double_gauss_fit,0)
     amplitude1_value =amplitude1_info[0]
     amplitude1_error =amplitude1_info[1]
-    print amplitude1_error
+#    print amplitude1_error,"amplitude error only diagnol terms"
     amplitude1_rel_error =amplitude1_info[2]
+
+
 
     # amplitude2
     amplitude2_info = parameter_info(double_gauss_fit,3)
@@ -389,9 +393,20 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
 
-    amplitude1= double_gauss_fit.GetParameter(0)
-    amplitude2= double_gauss_fit.GetParameter(3)
-    
+
+    diagnol_error = dict()
+     
+    diagnol_error['error_amplitude1'] = amplitude1_error
+    diagnol_error['error_amplitude2']=amplitude2_error
+    diagnol_error['error_sigma1']=sigma1_error
+    diagnol_error['error_sigma2']=sigma2_error
+    diagnol_error['error_mean1']=mean1_error
+    diagnol_error['error_mean2']=mean2_error
+
+
+
+
+
 
     #  cap sigma function
 
@@ -414,67 +429,64 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
         # formula for finding the cap sigma
 
         Capsigma = (1 / math.sqrt (2 * math.pi)) * integral /peak 
+
+
+
+
+        # module peak_derivtive(for more information)
+
         
 
         ## here i am calling the derivative function to take derivative of peak
 
 
+        # derivative value of amplitude1
+        Value_der_peak_amplitude1= derivative_value_peak(derivative_peak_amplitude,amplitude1_value,sigma1_value,mean1_value,Xmax)
 
 
-         # value of amplitude 1
-        Value_der_peak_amplitude1 = derivative_peak_amplitude.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value,x:Xmax})
-
-         #  print Value_der_peak_amplitude1,"Value_der_peak_amplitude1"
-
-
-
-
-         # value of amplitude 2
-        Value_der_peak_amplitude2 = derivative_peak_amplitude.evalf(subs={amplitude:amplitude2_value,sigma:sigma2_value,mean:mean2_value,x:Xmax})
-#        print Value_der_peak_amplitude2,"Value_der_peak_amplitude2"
+#        print derivative_amp1,"derivative_amp1"
 
 
 
+        # derivative value of amplitude2
+        Value_der_peak_amplitude2= derivative_value_peak(derivative_peak_amplitude,amplitude2_value,sigma2_value,mean2_value,Xmax)
+#        print derivative_amp2,"derivative_amp2"
 
 
-        
-        # value of sigma1
-        Value_der_peak_sigma1 = derivative_peak_sigma.evalf(subs={ amplitude:amplitude1_value, sigma:sigma1_value, mean:mean1_value, x:Xmax})
-
-#        print Value_der_peak_sigma1,"Value_der_peak_sigma1"
-
-
-        # sigma2
-
-        Value_der_peak_sigma2 = derivative_peak_sigma.evalf(subs={ amplitude:amplitude2_value, sigma:sigma2_value, mean:mean2_value, x:Xmax})
-#        print Value_der_peak_sigma2,"Value_der_peak_sigma2"
+        # derivative value of sigma1
+        Value_der_peak_sigma1= derivative_value_peak(derivative_peak_sigma,amplitude1_value,sigma1_value,mean1_value,Xmax)
 
 
 
-        # mean1
-
-        Value_der_peak_mean1 = derivative_peak_mean.evalf(subs={ amplitude:amplitude1_value, sigma:sigma1_value, mean:mean1_value, x:Xmax})
-
-
-#        print Value_der_peak_mean1,"Value_der_peak_mean1"
-
-
-        # mean2
-
-        Value_der_peak_mean2 = derivative_peak_mean.evalf(subs={ amplitude:amplitude2_value, sigma:sigma2_value, mean:mean2_value, x:Xmax})
-
-#        print Value_der_peak_mean2,"Value_der_peak_mean2"
-
-
-
-
-
-        # dignol elements of peak
-
-        diagnol_peak_terms = ( amplitude1_error * Value_der_peak_amplitude1 )**2 + ( amplitude2_error * Value_der_peak_amplitude2 )**2 + ( sigma1_error * Value_der_peak_sigma1 )**2 + ( sigma2_error * Value_der_peak_sigma2 )**2 + ( mean1_error * Value_der_peak_mean1 )**2 + ( mean2_error * Value_der_peak_mean2 )**2
+        # derivative value of sigma2
+        Value_der_peak_sigma2= derivative_value_peak(derivative_peak_sigma,amplitude2_value,sigma2_value,mean2_value,Xmax)
         
 
-        # off diagnol function
+
+        # derivative value of mean1
+        Value_der_peak_mean1= derivative_value_peak(derivative_peak_mean,amplitude1_value,sigma1_value,mean1_value,Xmax)
+
+#        print derivative_mean1,"derivative_mean1"      
+
+
+
+        # derivative value of mean2
+        Value_der_peak_mean2= derivative_value_peak(derivative_peak_mean,amplitude2_value,sigma2_value,mean2_value,Xmax)
+
+
+
+
+
+       # dignol elements of peak
+
+
+        diagnol_peak_terms = diagnol(Value_der_peak_amplitude1,Value_der_peak_amplitude2,Value_der_peak_sigma1,Value_der_peak_sigma2,Value_der_peak_mean1,Value_der_peak_mean2,amplitude1_error,amplitude2_error,sigma1_error,sigma2_error,mean1_error,mean2_error)
+
+
+
+
+
+        # off diagnol terms
         
         off_diagnol_peak_terms = offdiagnol(Value_der_peak_amplitude1, Value_der_peak_sigma1, Value_der_peak_mean1,Value_der_peak_amplitude2, Value_der_peak_sigma2, Value_der_peak_mean2,covariance_element['cov_amp1_mean1'], covariance_element['cov_amp1_sigma1'],covariance_element['cov_amp1_amp2'],covariance_element['cov_amp1_sigma2'],covariance_element['cov_amp1_mean2'],covariance_element['cov_mean1_sigma1'],covariance_element['cov_mean1_amp2'], covariance_element['cov_mean1_sigma2'],covariance_element['cov_mean1_mean2'],covariance_element['cov_sigma1_amp2'],covariance_element['cov_sigma1_sigma2'], covariance_element['cov_sigma1_mean2'],covariance_element['cov_amp2_sigma2'], covariance_element['cov_amp2_mean2'],covariance_element['cov_sigma2_mean2'] )
 
@@ -484,8 +496,17 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
         error_on_peak = math.sqrt( diagnol_peak_terms  + off_diagnol_peak_terms )  
 
 
+
+
+
+
         #### now its time to store the values of all determinants of peak in a dictionary so that i can use it for 
         ####   determining the error on FOM (you will see) :)
+
+
+
+
+
         derivative_of_peak = dict()
         derivative_of_peak['der_peak_amplitude1'] = Value_der_peak_amplitude1
         derivative_of_peak['der_peak_amplitude2']=Value_der_peak_amplitude2
@@ -500,47 +521,41 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 #        print error_on_peak,"error on peak"
 
-        # now derterminants of the cap sigma for calculating the error on cap sigma X and Y
-        # i will read it like that derivative of cap sigma w.r.t parameters
 
 
 
-        # derivative of cap sigma w.r.t amplitude1
-        Value_der_Capsigma_amplitude1= ( 1.0 / peak - ( (amplitude1_value + amplitude2_value) * Value_der_peak_amplitude1 )  / peak**2 ) / math.sqrt(2*math.pi)
+        # module sigma_derivtive.py
+
+
+        Value_der_Capsigma_amplitude1= derivative_value(derivative_width_beam_amplitude1,amplitude1_value,sigma1_value,mean1_value,amplitude2_value,sigma2_value,mean2_value,Xmax)
+
+
+#        print derivative_amp1,"derivative_amp1"
+
+
+
+        Value_der_Capsigma_amplitude2= derivative_value(derivative_width_beam_amplitude2,amplitude1_value,sigma1_value,mean1_value,amplitude2_value,sigma2_value,mean2_value,Xmax)
+#        print derivative_amp2,"derivative_amp2"
+
+
+
+        Value_der_Capsigma_sigma1= derivative_value(derivative_width_beam_sigma1,amplitude1_value,sigma1_value,mean1_value,amplitude2_value,sigma2_value,mean2_value,Xmax)
 
 
 
 
-        # derivative of cap sigma  w.r.t amplitude2
-
-        Value_der_Capsigma_amplitude2= ( 1.0 / peak - ( (amplitude1_value + amplitude2_value) * Value_der_peak_amplitude2 )  / peak**2 ) / math.sqrt(2*math.pi)
-
-
-
+        Value_der_Capsigma_sigma2= derivative_value(derivative_width_beam_sigma2,amplitude1_value,sigma1_value,mean1_value,amplitude2_value,sigma2_value,mean2_value,Xmax)
         
-        # derivative of cap sigma  w.r.t sigma1
-
-        Value_der_Capsigma_sigma1 = -( (amplitude1_value + amplitude2_value) * Value_der_peak_sigma1 )/ math.sqrt(2*math.pi) / peak**2
 
 
 
+        Value_der_Capsigma_mean1= derivative_value(derivative_width_beam_mean1,amplitude1_value,sigma1_value,mean1_value,amplitude2_value,sigma2_value,mean2_value,Xmax)
 
-        # derivative of cap sigma w.r.t sigma2
-
-        Value_der_Capsigma_sigma2 = -( (amplitude1_value + amplitude2_value) * Value_der_peak_sigma2 ) / math.sqrt(2*math.pi) / peak**2
-
+#        print derivative_mean1,"derivative_mean1"      
 
 
-       # derivative of cap sigma w.r.t mean1
+        Value_der_Capsigma_mean2= derivative_value(derivative_width_beam_mean2,amplitude1_value,sigma1_value,mean1_value,amplitude2_value,sigma2_value,mean2_value,Xmax)
 
-        Value_der_Capsigma_mean1 = ( (amplitude1_value + amplitude2_value) * Value_der_peak_mean1 ) / math.sqrt(2*math.pi) / peak**2
-
-
-
-
-
-       # derivative of cap sigma w.r.t mean2
-        Value_der_Capsigma_mean2 = ( (amplitude1_value + amplitude2_value) * Value_der_peak_mean2 ) / math.sqrt(2*math.pi) / peak**2
 
 
 
@@ -555,13 +570,9 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
         # diagnol capsigma terms
+        diagnol_Capsigma_terms = diagnol(Value_der_Capsigma_amplitude1,Value_der_Capsigma_amplitude2,Value_der_Capsigma_sigma1,Value_der_Capsigma_sigma2,Value_der_Capsigma_mean1,Value_der_Capsigma_mean2,amplitude1_error,amplitude2_error,sigma1_error,sigma2_error,mean1_error,mean2_error)
 
 
-
-        diagnol_Capsigma_terms = ( amplitude1_error * Value_der_Capsigma_amplitude1 )**2 + ( amplitude2_error * Value_der_Capsigma_amplitude2 )**2 + ( sigma1_error * Value_der_Capsigma_sigma1 )**2 + ( sigma2_error * Value_der_Capsigma_sigma2 )**2 + ( mean1_error * Value_der_Capsigma_mean1 )**2 + ( mean2_error * Value_der_Capsigma_mean2 )**2
-
-
-        
 
 
        # Cap sigma error
@@ -626,10 +637,13 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     # 8 --> covariance element
     # 9 --> dictionary for derivative of peak
     # 10 --> dictionary for derivative of cap sigma
+    # 11 --> dictionary for the dignol terms corresponding to the error on each parameter
+
+
 
 
     # returning the values of analyse_scan
-    return sigma_for_luminosity, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix , error_peak, error_Capsigma, covariance_element, peak_derivative_dict, derivative_of_Capsigma
+    return sigma_for_luminosity, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix , error_peak, error_Capsigma, covariance_element, peak_derivative_dict, derivative_of_Capsigma, diagnol_error
 
 
 
@@ -711,76 +725,10 @@ for filename in fit_pickle:
                     if result_x[5] == 3 and result_y[5]==3: ## covariance matrix cut
 
                         
-                        if result_x[1]<7 and result_y[1]<7:#chi/ndf cut
+                        if result_x[1] < 7 and result_y[1] < 7:#chi/ndf cut
 
 
 
-                           
-
-                            #chi2/ndf X scan
-                            chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
-
-#                            print len(chi2_NDF_x),"chi/ndf"
-
-                            histogram(100,0,20,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi2/NDF_x")
-
-
-                            #chi2/ndf Y scan
-                            chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
-                            histogram(100,0,20,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi2/NDF_y")
-
-
-
-
-                            # peak x relative error
-                            relative_error_peak_x = (result_x[6]/result_x[2])*100
-
-
-                            # appending peak x array
-                            rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
-                            # histogram
-                            histogram(100,0,0.5,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
-
-
-
-                            
-
-                            # peak y
-                            relative_error_peak_y = (result_y[6]/result_y[2])*100
-                            # appending peak x array
-                            rel_error_on_peak_y = np.append(rel_error_on_peak_y,relative_error_peak_y)
-                            # histogram
-                            histogram(100,0,0.5,rel_error_on_peak_y,"rel_error_on_peak_y","plots/rel_error_on_peak_y.png","rel_error_on_peak_y[%]")
-
-
-                        
-
-
-
-                                # sigma error
-                            rel_sigma_x = (result_x[7]/result_x[0])*100
-                            rel_error_capsigma_x = np.append(rel_error_capsigma_x,rel_sigma_x)
-                                # histogram
-
-                            histogram(100,0,3,rel_error_capsigma_x,"rel_error_on_sigma_x","plots/rel_error_on_sigma_x.png","rel_error_on_sigma_x[%]")
-
-
-
-
-
-
-                                # y scan sigma
-                            rel_sigma_y = (result_y[7]/result_y[0])*100
-                            rel_error_capsigma_y = np.append(rel_error_capsigma_y,rel_sigma_y)
-
-                            histogram(100,0,3,rel_error_capsigma_y,"rel_error_on_sigma_y","plots/rel_error_on_sigma_y.png","rel_error_on_sigma_y[%]")
-
-
-
-
-
-
-                            
                             # now expected luminosity
                             
                             luminosity_of_beam =expected_luminosity(result_x[0],result_y[0],product_of_intensity)
@@ -801,13 +749,17 @@ for filename in fit_pickle:
                             relative_error_on_luminosity= (error_on_luminosity/luminosity_of_beam)*100
                             
 
+
+#                            if relative_error_on_luminosity>3:
+                                
+                            
+ #                           print error_on_luminosity,"error_on_luminosity"
+                                
+
+
                             # relative lumisnoity array
                             rel_error_on_lumi = np.append(rel_error_on_lumi,relative_error_on_luminosity)
  
-                            #histogram
-
-                            
-                            histogram(100,0,3,rel_error_on_lumi,"rel_error_on_lumi","plots/rel_error_on_lumi.png","rel_error_on_luminosity[%]")
 
 
 
@@ -820,20 +772,134 @@ for filename in fit_pickle:
                             FOM=np.append(FOM,Figure_of_Merit)
 
 
+
+
+                            # print dignolXY_FOM( result_x[9]['der_peak_amplitude1'], result_x[0], result_x[2], result_x[10]['der_Capsigma_amplitude1'],result_y[10]['der_Capsigma_amplitude1'],result_x[11]['error_amplitude1'],result_y[11]['error_amplitude1'] ),"final term"
+                            
+                            # print result_x[9]['der_peak_amplitude1'],"derivative of peak "
+                            # print result_x[0],"sigma x"
+                            # print result_x[2],"peak"
+                            # print result_x[10]['der_Capsigma_amplitude1']," derivative of sigma x"
+                            # print result_y[10]['der_Capsigma_amplitude1'],"derivative of sigma y"
+                            # print result_x[11]['error_amplitude1'],"error x amplitude"
+                            # print result_y[11]['error_amplitude1'],"error y "
+                     
+
+       
+
+
+                            
+
+                            
+                            
+ #                           print result_x[9]['der_peak_amplitude1'],"result_x[9]['der_peak_amplitude1']"
+                            # print product_of_intensity,"product_of_intensity"
+                            
+                            # print luminosity_of_beam,"luminosity_of_beam"
+                             
+                            # print result_x[0],"sigma x of the beam"
+                            
+
+                            # print result_y[0],"sigma y"
+                            
+
+                            # print result_x[10]['der_Capsigma_amplitude1'],"result_x[10]['der_Capsigma_amplitude1']"
+                            
+
+                            # print result_y[10]['der_Capsigma_amplitude1'],"result_y[10]['der_Capsigma_amplitude1']"
+                                
+
+
+
+
+
+
+
+
                              # histogram
                             histogram(100,0.9,1.05,FOM,"FOM","plots/FOM.png","Figure of merit(peak/lumi)")
 
-                            
 
 
                             
+                            #histogram for the luminsoity
+
                             
-                            der_FOM_amplitude1= diagnol_FOM(result_x[9]['der_peak_amplitude1'],product_of_intensity, luminosity_of_beam ,result_x[0],result_y[0],result_x[10]['der_Capsigma_amplitude1'],result_y[10]['der_Capsigma_amplitude1'])
+                            histogram(100,0,5,rel_error_on_lumi,"rel_error_on_lumi","plots/rel_error_on_lumi.png","rel_error_on_luminosity[%]")
 
-                            print der_FOM_amplitude1,"der_FOM_amplitude1"
+                           
+
+                            #chi2/ndf X scan
+                            chi2_NDF_x= np.append(chi2_NDF_x,result_x[1])
+
+#                            print len(chi2_NDF_x),"chi/ndf"
+
+                            histogram(100,0,20,chi2_NDF_x,"Chi_NDF_x","plots/Chi2_NDF_x.png","chi2/NDF_x")
+
+
+                            #chi2/ndf Y scan
+                            chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
+                            histogram(100,0,20,chi2_NDF_y,"Chi_NDF_y","plots/Chi2_NDF_y.png","chi2/NDF_y")
 
 
 
+                            # peak x relative error
+                            relative_error_peak_x = (result_x[6]/result_x[2])*100
+
+
+                            # appending peak x array
+                            rel_error_on_peak_x = np.append(rel_error_on_peak_x,relative_error_peak_x)
+
+#                            print rel_error_on_peak_x,"rel error on peak x"
+                            # histogram
+                            histogram(100,0.08,0.2,rel_error_on_peak_x,"rel_error_on_peak_x","plots/rel_error_on_peak_x.png","rel_error_on_peak_x[%]")
+
+
+
+                        
+                            # peak y
+                            relative_error_peak_y = (result_y[6]/result_y[2])*100
+                            # appending peak x array
+                            rel_error_on_peak_y = np.append(rel_error_on_peak_y,relative_error_peak_y)
+                            print rel_error_on_peak_y,"rel_error_on_peak_y"
+                            # histogram
+                            histogram(100,0.08,0.2,rel_error_on_peak_y,"rel_error_on_peak_y","plots/rel_error_on_peak_y.png","rel_error_on_peak_y[%]")
+
+
+                        
+                                # sigma error
+                            rel_sigma_x = (result_x[7]/result_x[0])*100
+
+                            
+#                            print rel_sigma_x,"rel_sigma_x"
+                            
+
+                            rel_error_capsigma_x = np.append(rel_error_capsigma_x,rel_sigma_x)
+                                # histogram
+
+                            histogram(100,0,3,rel_error_capsigma_x,"rel_error_on_sigma_x","plots/rel_error_on_sigma_x.png","rel_error_on_sigma_x[%]")
+
+
+
+
+
+
+                                # y scan sigma
+                            rel_sigma_y = (result_y[7]/result_y[0])*100
+                            
+#                            print rel_sigma_y,"rel_sigma_y"
+                            
+
+                            rel_error_capsigma_y = np.append(rel_error_capsigma_y,rel_sigma_y)
+
+                            histogram(100,0,3,rel_error_capsigma_y,"rel_error_on_sigma_y","plots/rel_error_on_sigma_y.png","rel_error_on_sigma_y[%]")
+
+
+
+
+
+
+                            
 
 
 
