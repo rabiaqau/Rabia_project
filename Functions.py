@@ -13,6 +13,26 @@ import glob
 
 
 
+def diagnol(amp1,amp2,sigma1,sigma2,mean1,mean2,amp1_E,amp2_E,sigma1_E,sigma2_E,mean1_E,mean2_E):
+
+
+    diagnol_terms = ( amp1_E * amp1 )**2 + ( amp2_E * amp2 )**2 + ( sigma1_E * sigma1 )**2 + ( sigma2_E * sigma2 )**2 + ( mean1_E * mean1 )**2 + ( mean2_E * mean2 )**2
+
+    return diagnol_terms
+
+
+
+
+def derivative_value(derivative,amp1,sig1,mea1,amp2,sig2,mea2,position):
+
+    
+    required_value = derivative.evalf(subs={amplitude1:amp1,sigma1:sig1,mean1:mea1,amplitude2:amp2,sigma2:sig2,mean2:mea2, x:position})
+
+
+    return required_value
+
+
+
 
 # fit function
 
@@ -21,35 +41,83 @@ def one_dimension_double_gauss_fit(x, p):
     return p[0] * (1.0 / ( math.sqrt(2 * math.pi) * p[2] ) ) * np.exp( - (1.0 / 2.0) * ( (x[0] - p[1])**2 / ( p[2] **2) ) ) + p[3] * (1.0 / (  math.sqrt(2 * math.pi) * p[4] ) ) * np.exp( - (1.0 / 2.0) * ( (x[0] - p[5])**2 / ( p[4] **2) ) )
 
 
+
+
+
+
+
 # expected _luminosity fucntion                                                                                               
-freq = (1./8.89244e-05) #[s-1]                                                                                                
+frequency = (1./8.89244e-05) #[s-1]                                                                                                
 inel = 8. * 1e-24
 
 def expected_luminosity( sigma_x, sigma_y, current ):
-    return freq * current * 1e22 / ( sigma_x * sigma_y  * 2.0 * math.pi) / (freq / inel )
+    return frequency * current * 1e22 / ( sigma_x * sigma_y  * 2.0 * math.pi) / (frequency / inel )
 
 
 
 
 
 
-### graph plotting function                                                                                                                    
-def plot_graph (path_graph, name_graph, number_graph, x, y, graph_title_x,graph_title_y, islowMu = False):
-# isdate= False, islowMu = False):                                                                                                             
+### graph plotting function                                                                                                     plot_graph ("plots/FOM_date.png",Number, date, FOM, FOM_error,"fom","date",True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+def graph (path_graph, name_graph, number_graph, x, y,y_error, graph_title_x,graph_title_y, isdate = False):
 
     canvas = ROOT.TCanvas( 'name', 'name',800, 600 )
-    graph = ROOT.TGraph(number_graph , x, y)
+
+    graph = ROOT.TGraphErrors(number_graph , x, y, np.zeros(len(x)), y_error)
 
     graph.SetMarkerColor( 2 )
     graph.SetMarkerStyle( 20 )
     graph.SetMarkerSize( 1.3 )
     graph.GetXaxis().SetTitle(graph_title_x)
+
+    if isdate:                                                                                                                
+        graph.GetXaxis().SetTimeDisplay(1)                                                                                 
+        graph.GetXaxis().SetTimeFormat("%d/%m")       
+
+    graph.GetYaxis().SetTitle(graph_title_y)
+    graph.GetXaxis().SetNdivisions(4,4,0)
+    graph.Draw("AP")
+    canvas.Modified()
+    canvas.Print( path_graph )
+
+
+
+
+
+
+               
+def plot_graph (path_graph, number_graph, x, y, graph_title_x,graph_title_y):#, isdate = False):
+# isdate= False, islowMu = False):                                                                                                             
+
+    canvas = ROOT.TCanvas( 'name', 'name',800, 600 )
+    graph = ROOT.TGraph(number_graph , x, y)
+
+#    graph = ROOT.TGraphErrors(number_graph , x, y, np.zeros(len(x)), y_error)
+
+    graph.SetMarkerColor( 2 )
+    graph.SetMarkerStyle( 20 )
+    graph.SetMarkerSize( 1.3 )
+    graph.GetXaxis().SetTitle(graph_title_x)
+
     # if isdate:                                                                                                                               
     #     graph.GetXaxis().SetTimeDisplay(1)                                                                                                   
-    #     graph.GetXaxis().SetTimeFormat("%d/%m")                                                                                              
+    #     graph.GetXaxis().SetTimeFormat("%d/%m")                                                                                 
+        
     graph.GetYaxis().SetTitle(graph_title_y)
-    if islowMu:
-        graph.GetXaxis().SetRangeUser(0,5)
+
     graph.GetXaxis().SetNdivisions(4,4,0)
     graph.Draw("AP")
     canvas.Modified()
