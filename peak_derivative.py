@@ -21,13 +21,6 @@ def derivative(formula,parameter):
 
 
 
-def derivative_value_peak(derivative,amp,sig,mea,position):
-
-
-    required_value = derivative.evalf(subs={amplitude:amp,sigma:sig,mean:mea, x:position})
-
-
-    return required_value
 
 
 
@@ -59,30 +52,59 @@ derivative_peak_mean= derivative(gauss,mean)
 
 
 
-# variables define    
-amplitude1, sigma1, mean1, amplitude2, sigma2, mean2 = sym.symbols(' amplitude1 sigma1 mean1 amplitude2 sigma2 mean2',real=True)
+
+
+def derivative_value_peak(derivative,amp,sig,mea,position):
+
+
+    required_value = derivative.evalf(subs={amplitude:amp,sigma:sig,mean:mea, x:position})
+
+
+    return required_value
 
 
 
-# sigma XY formula
-sigma_XY = (amplitude1 + amplitude2) /( amplitude1 * (1.0 / ( math.sqrt(2 * math.pi) * sigma1 ) ) * exp( - (1.0 / 2.0) * ( (x - mean1)**2 / ( sigma1 **2) ) ) + amplitude2 * (1.0 / ( math.sqrt(2 * math.pi) * sigma2 ) ) * exp( - (1.0 / 2.0) * ( (x - mean2)**2 / ( sigma2 **2) ) ) )
+
+
+def set_peak_derivative_value(amplitude1,amplitude2,mean1,mean2,sigma1,sigma2,position):
+  # derivative value of amplitude1                                                                                                                                                                                                                                      
+    der_peak_amplitude1= derivative_value_peak(derivative_peak_amplitude,amplitude1,sigma1,mean1,position)
+
+
+    # derivative value of amplitude2                                                                                                                                                                                                                                      
+    der_peak_amplitude2= derivative_value_peak(derivative_peak_amplitude,amplitude2,sigma2,mean2,position)
+#        print derivative_amp2,"derivative_amp2"                                                                                                                                                                                                                              
+
+
+    # derivative value of sigma1                                                                                                                                                                                                                                          
+    der_peak_sigma1= derivative_value_peak(derivative_peak_sigma,amplitude1,sigma1,mean1,position)
 
 
 
-# calling the derivative function
+    # derivative value of sigma2                                                                                                                                                                                                                                          
+    der_peak_sigma2= derivative_value_peak(derivative_peak_sigma,amplitude2,sigma2,mean2,position)
 
-# amplitude
-derivative_sigma_XY_amplitude1 =  derivative(sigma_XY,amplitude1)                             
 
-#print derivative_sigma_XY_amplitude1,"derivative on other module"                                                                 
 
-# # sigma                                                                                                                                                                 
+    # derivative value of mean1                                                                                                                                                                              
+    
+    der_peak_mean1= derivative_value_peak(derivative_peak_mean,amplitude1,sigma1,mean1,position)
 
-# derivative_peak_sigma= derivative(gauss,sigma)                                                                                                                                
+#        print derivative_mean1,"derivative_mean1"                                                                                                                                                                                                                            
 
-# # mean                                                                                                                                                                  
 
-# derivative_peak_mean= derivative(gauss,mean)                                                                          
+
+    # derivative value of mean2                                                                                                                                                                                                                                           
+    der_peak_mean2= derivative_value_peak(derivative_peak_mean,amplitude2,sigma2,mean2,position)
+    
+
+
+    return der_peak_amplitude1, der_peak_amplitude2, der_peak_sigma1, der_peak_sigma2, der_peak_mean1, der_peak_mean1
+
+
+
+
+
 
 
 

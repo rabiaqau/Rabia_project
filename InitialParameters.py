@@ -37,6 +37,60 @@ def initialparameter(fit, Amp1, Amp2, Mean1, Mean2 ,Sigma1, Sigma2 ):
 
 def SetInitialParameters(Fit,RunNumber,xscan,Early,amplitude,sigma,mean):
 
+    if RunNumber==350531:
+
+
+        if Early and xscan:
+            initialparameter(Fit,amplitude*0.58, amplitude*0.42, mean*1.3, mean*0.6 ,sigma*1.2, sigma*0.9)
+
+        if not Early and xscan:
+            initialparameter(Fit,0.94,0.0796, mean, mean*10 ,0.014,0.066)
+
+
+
+
+
+    if RunNumber==350479:
+    
+        if xscan and Early:
+            initialparameter(Fit,0.473, 1.33,-0.00120, -0.00224 ,0.00966, 0.014)
+        if not Early and xscan:
+            initialparameter(Fit,amplitude*0.98,amplitude*0.043,mean,mean ,0.0140, 0.047)
+        else:
+            initialparameter(Fit,amplitude, amplitude, mean, mean ,sigma, sigma*2)
+
+
+
+
+    if RunNumber==350184:
+
+        if Early and xscan:
+            initialparameter(Fit,amplitude*0.53, amplitude*0.49, mean*1.25, mean*0.9 ,sigma*1.2, sigma*0.8)
+
+        if Early and not xscan:
+            initialparameter(Fit,amplitude, amplitude, mean, mean ,sigma, sigma*2)
+
+
+        if not Early and xscan:
+            initialparameter(Fit,amplitude*0.93, amplitude*0.1 , mean, -mean ,sigma, sigma*1.6)
+
+
+
+
+    if RunNumber==350220:
+        if xscan :
+            initialparameter(Fit, amplitude*0.52, amplitude*0.49, mean, mean, sigma*1.2, 2*sigma)
+        if not xscan:
+
+            initialparameter(Fit, amplitude*0.52, 0.105, mean, 0.198, sigma*1.2, 0.0239)
+
+
+
+
+
+
+
+
 
 
     if RunNumber==350013:
@@ -63,6 +117,11 @@ def SetInitialParameters(Fit,RunNumber,xscan,Early,amplitude,sigma,mean):
         if Early and not xscan:
             initialparameter(Fit, 0.9*amplitude, 0.1*amplitude, mean, mean, sigma, 2*sigma)
 
+
+        if not Early and xscan:
+
+            initialparameter(Fit,amplitude ,amplitude*0.3, mean, -mean, sigma, 2*sigma)
+
         if not Early and not xscan:
             initialparameter(Fit, amplitude, amplitude, mean, mean, sigma, 2*sigma)
 
@@ -73,11 +132,8 @@ def SetInitialParameters(Fit,RunNumber,xscan,Early,amplitude,sigma,mean):
 
 
     #
-    if RunNumber==350220:
-        if xscan :
-            initialparameter(Fit, amplitude*0.52, amplitude*0.49, mean, mean, sigma*1.2, 2*sigma)
-        if not xscan:
-            initialparameter(Fit,2.7, 0.105, -0.0012,0.0198 ,0.0207, 0.0239)
+            #initialparameter(Fit,2.7, 0.105, -0.0012,0.0198 ,0.0207, 0.0239)
+            #initialparameter(Fit,2.7, 0.105, -0.0012,0.0198 ,0.0207, 0.0239)
     #
 
     if RunNumber==349327:
@@ -193,23 +249,26 @@ def SetInitialParameters(Fit,RunNumber,xscan,Early,amplitude,sigma,mean):
 
 # check this scan Early y and late xscan these are not responiding correctly
     if RunNumber==350121:
+
+
         if xscan and Early:
             initialparameter(Fit,amplitude*0.52, amplitude*0.49, mean, mean ,sigma, sigma*2)
         if not xscan and Early:
             initialparameter(Fit,amplitude, amplitude, mean, mean ,sigma, sigma*1.8)
+
+
         # if not Early and xscan:
         #     initialparameter(Fit,amplitude*0.5, amplitude*0.5, mean, mean ,sigma, sigma*1.28)
+
+
         if not Early and not xscan:
             initialparameter(Fit,amplitude, amplitude, mean, mean ,sigma, sigma*2)
-##    
-    if RunNumber==350184:
-        if Early and xscan:
-            initialparameter(Fit,amplitude*0.53, amplitude*0.49, mean*1.25, mean*0.9 ,sigma*1.2, sigma*0.8)
-        if Early and not xscan:
-            initialparameter(Fit,amplitude, amplitude, mean, mean ,sigma, sigma*2)
+   
 
-        if not Early and xscan:
-            initialparameter(Fit,amplitude*0.9, amplitude*0.9, mean, mean ,sigma, sigma*1.5)
+
+
+
+
 ##
     if RunNumber==350440:
         if xscan and Early:
@@ -217,19 +276,12 @@ def SetInitialParameters(Fit,RunNumber,xscan,Early,amplitude,sigma,mean):
         else:
             initialparameter(Fit,amplitude, amplitude, mean, mean ,sigma, sigma*2)
 
-    if RunNumber==350479:
-        if xscan and Early:
-            initialparameter(Fit,0.473, 1.33,-0.00120, -0.00224 ,0.00966, 0.014)
-        if not Early and xscan:
-            initialparameter(Fit,1.00, 0.336, 0.00016,0.29 ,0.0140, 0.047)
-        else:
-            initialparameter(Fit,amplitude, amplitude, mean, mean ,sigma, sigma*2)
 
-    if RunNumber==350531:
-        if Early and xscan:
-            initialparameter(Fit,amplitude*0.58, amplitude*0.42, mean*1.3, mean*0.6 ,sigma*1.2, sigma*0.9)
-        if not Early and xscan:
-            initialparameter(Fit,amplitude*0.5, amplitude*0.08, mean, mean*8 ,sigma, sigma*4.7)
+
+
+
+
+
 #
     if RunNumber==350682:
         if Early and xscan:
