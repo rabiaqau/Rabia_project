@@ -1,4 +1,5 @@
 
+
 #Rabia shaheen
 # import libararies
 from ROOT import *
@@ -13,14 +14,28 @@ import os.path
 import pickle
 import sys
 import glob
+#import sympy as sym
+import math
+#from sympy import exp
+
+
+# modules
 from Functions import *
 from InitialParameters import *
+
+
+# these modules are for the derivative method
 from peak_derivative import *
-import sympy as sym
-import math
-from sympy import exp
 from sigma_derivative import *
 from FOM_derivative import *
+
+
+# this is for the numerical method(1 sigma up and 1 sigma down)
+
+from error_propagation import *
+
+from error_propagation_FOM import *
+
 
 
 
@@ -29,7 +44,7 @@ from FOM_derivative import *
 # importing pickle files
 
 
-fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_359310.pickle"))
+fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_362661.pickle"))
 
 #fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
 
@@ -99,23 +114,26 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
     # mean of the single gaussian function
     Mean = single_gauss_fit.GetParameter(1)
-    print Mean,"Mean" 
+#    print bunches,"bunches"
+
+#    print bunches,"bunches"
+#    print Mean,"Mean" 
 
     # sigma of the single gaussian function
 
     Sigma = single_gauss_fit.GetParameter(2)
 
-    print Sigma,"Sigma" 
+#    print Sigma,"Sigma" 
 
     # getting value for the double gauss fit before we have only constant term
 
     Amplitude = constant * Sigma * math.sqrt(2*math.pi)
 
-    print Amplitude,"Amplitude"
+ #   print Amplitude*0.5,"Amplitude"
 
     # initial values for 1d double gaussian fit paramters
     
-    #amplitude 1          
+    # #amplitude 1          
     double_gauss_fit.SetParameter(0,0.5*Amplitude)
     
     # amplitude 2
@@ -136,16 +154,20 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
     # Please note that i have some special inital parameters value for the 1d double gaussian fit
     # for more information please see the file "InitialParameters.py"
-
     # here i am setting those special initial parameters
 
 
-    output=SetInitialParameters(double_gauss_fit,run_number,Xscan,early,Amplitude,Sigma,Mean)
+
+
+
+    output = SetInitialParameters(double_gauss_fit,run_number,Xscan,early,Amplitude,Sigma,Mean)
+#    print output,"output from initial conditions"
+
 
 
    # fitting
 
-    status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
+    status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
 
 
 
@@ -157,11 +179,11 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
         ROOT.TVirtualFitter.Fitter(graph).SetMaxIterations(10000)
 
         # refitting
-        status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
+        status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
 
         # refitting
         if int(status)==4:
-            status = graph.Fit('double_gauss_fit','SN')#fitting of double gaussain
+            status = graph.Fit('double_gauss_fit','SNQ')#fitting of double gaussain
 
 
 
@@ -184,7 +206,8 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     # chi/NDF
 
     chi_NDF_double_gauss_fit= chi2_double_gauss_fit / NDF_double_gauss_fit
-
+#    print chi_NDF_double_gauss_fit,"chi_NDF_double_gauss_fit"
+    
     # round off chi2 of the 1d double gaussian fit
 
     round_chi_double_gauss_fit = round(chi2_double_gauss_fit,2)
@@ -298,6 +321,26 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
 
+
+
+####### NUmerical method (1 sigma up and 1 sigma down)
+
+    
+
+    numerical_CapSigma_error = calc_with_error(width, double_gauss_fit, status,double_gauss_fit)
+
+ #   print numerical_sigma_error,"numerical_sigma_error"
+
+    numerical_peak_error = calc_with_error(peak_gauss, double_gauss_fit, status,double_gauss_fit)
+
+
+#    print numerical_peak_error,"numerical_peak_error"
+
+
+
+
+
+
     ### elements of Covariance matrix            
   
     # 0 amp1
@@ -351,6 +394,8 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
     amplitude1_error =amplitude1_info[1]
 #    print amplitude1_error,"amplitude error only diagnol terms"
+
+
     amplitude1_rel_error =amplitude1_info[2]
 
 
@@ -359,6 +404,8 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     amplitude2_info = parameter_info(double_gauss_fit,3)
     amplitude2_value =amplitude2_info[0]
     amplitude2_error =amplitude2_info[1]
+
+
     amplitude2_rel_error =amplitude2_info[2]
 
  #   print amplitude2_value,"2"
@@ -395,6 +442,15 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     mean2_rel_error=mean2_info[2]
 
 
+    # relative error of then paamters
+    paramter_relative_error = dict()
+
+    paramter_relative_error['amp1']=amplitude1_rel_error
+    paramter_relative_error['amp2']=amplitude2_rel_error
+    paramter_relative_error['sigma1']= sigma1_rel_error
+    paramter_relative_error['sigma2']=sigma2_rel_error
+    paramter_relative_error['mean1']=mean1_rel_error
+    paramter_relative_error['mean2']=mean2_rel_error
 
     # dignol errors dictionary
     diagnol_error = dict()
@@ -448,30 +504,39 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
         # module peak_derivtive(for more information)
 
+
+#        derivative_peak_amplitude
+        peak_amplitude1=derivative_peak_amplitude.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+
+        peak_amplitude2=derivative_peak_amplitude.evalf(subs={amplitude:amplitude2_value,sigma:sigma2_value,mean:mean2_value, x:peak_position})
+
+        peak_sigma1 =derivative_peak_sigma.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+        peak_sigma2 = derivative_peak_sigma.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+        peak_mean1=derivative_peak_mean.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+        peak_mean2=derivative_peak_mean.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+        
+        dignol_peak= (peak_amplitude1* diagnol_error['error_amplitude1'] )**2 + (peak_amplitude2 *diagnol_error['error_amplitude2'])**2 + (peak_sigma1 *diagnol_error['error_sigma1'] )**2+(peak_sigma2 *diagnol_error['error_sigma2'] )**2 + (peak_mean1 *diagnol_error['error_mean1'] )**2 + (peak_mean2 *diagnol_error['error_mean2'] )**2
+
+
+
+
         
 
         ## here i am calling the derivative function to take derivative of peak
-        value_of_peak_derivative = set_peak_derivative_value(amplitude1_value,amplitude2_value,mean1_value,mean2_value,sigma1_value,sigma2_value,peak_position)
-        
-
-
-       # dignol elements of peak
-
-
-        diagnol_peak_terms = diagnol(value_of_peak_derivative[0],value_of_peak_derivative[1],value_of_peak_derivative[2],value_of_peak_derivative[3],value_of_peak_derivative[4],value_of_peak_derivative[5],amplitude1_error,amplitude2_error,sigma1_error,sigma2_error,mean1_error,mean2_error)
-
-
-
 
 
         # off diagnol terms
         
-        off_diagnol_peak_terms = offdiagnol(value_of_peak_derivative[0], value_of_peak_derivative[2],value_of_peak_derivative[4],value_of_peak_derivative[1],value_of_peak_derivative[3],value_of_peak_derivative[5],covariance_element['cov_amp1_mean1'], covariance_element['cov_amp1_sigma1'],covariance_element['cov_amp1_amp2'],covariance_element['cov_amp1_sigma2'],covariance_element['cov_amp1_mean2'],covariance_element['cov_mean1_sigma1'],covariance_element['cov_mean1_amp2'], covariance_element['cov_mean1_sigma2'],covariance_element['cov_mean1_mean2'],covariance_element['cov_sigma1_amp2'],covariance_element['cov_sigma1_sigma2'], covariance_element['cov_sigma1_mean2'],covariance_element['cov_amp2_sigma2'], covariance_element['cov_amp2_mean2'],covariance_element['cov_sigma2_mean2'] )
+        off_diagnol_peak_terms = offdiagnol(peak_amplitude1,peak_sigma1,peak_mean1,peak_amplitude2,peak_sigma2,peak_mean2,covariance_element['cov_amp1_mean1'], covariance_element['cov_amp1_sigma1'],covariance_element['cov_amp1_amp2'],covariance_element['cov_amp1_sigma2'],covariance_element['cov_amp1_mean2'],covariance_element['cov_mean1_sigma1'],covariance_element['cov_mean1_amp2'], covariance_element['cov_mean1_sigma2'],covariance_element['cov_mean1_mean2'],covariance_element['cov_sigma1_amp2'],covariance_element['cov_sigma1_sigma2'], covariance_element['cov_sigma1_mean2'],covariance_element['cov_amp2_sigma2'], covariance_element['cov_amp2_mean2'],covariance_element['cov_sigma2_mean2'] )
 
 
 
-        # here is the error on peak
-        error_on_peak = math.sqrt( diagnol_peak_terms  + off_diagnol_peak_terms )  
+        # # here is the error on peak
+        error_on_peak = math.sqrt( dignol_peak + off_diagnol_peak_terms)
 
 
 
@@ -575,11 +640,13 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
     # 10 -->parameter value
     # 11 -->position of maximum peak
     # 12 -->Capsigma_derivative_dict
-
-
+    # 13 --> Numerical CapSigma_error
+    # 14 --> Numerical peak_error
+    # 15 --> double gauss fit
+    # 16 --> status of fit
 
     # returning values analyse_scan
-    return sigma_for_luminosity, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix , error_peak, error_Capsigma, covariance_element, diagnol_error, parameter_value,peak_position,CapSigma_derivative_dict
+    return sigma_for_luminosity, chi_NDF_double_gauss_fit, peak, chi2_double_gauss_fit, status_of_fit, staus_cov_matrix , error_peak, error_Capsigma, covariance_element, diagnol_error, parameter_value, peak_position, CapSigma_derivative_dict, numerical_CapSigma_error, numerical_peak_error,double_gauss_fit,status
 
 
 
@@ -591,6 +658,11 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 FOM =np.array([])
 FOM_error =np.array([])
+peak =np.array([])
+peak_error=np.array([])
+
+
+
 
 chi2_NDF_x=np.array([])
 
@@ -615,6 +687,13 @@ date_of_scans= np.array([])
 
 run_number= np.array([])
 
+
+# paramters relative error
+par1_x= np.array([])
+par2_x= np.array([])
+
+par1_y= np.array([])
+par2_y= np.array([])
 
 
 
@@ -647,6 +726,10 @@ for filename in fit_pickle:
             
             result_y = analyse_scan(i_scan, sep_y, exp_lumi_y ,err_y ,"Emittance_scan/", run, bunches, curr_1, False, early,date)# calling the analyse function with x scan switch off
 
+        
+
+
+
 
 
             # this part will use for determining the nominal mu
@@ -660,39 +743,51 @@ for filename in fit_pickle:
             # product of intensities
             product_of_intensity = n1*n2
             
+            
 
+#            print product_of_intensity,"product_of_intensity"
 
             # selection cuts
-            if output['bunches'] >2000: # bunches cut
+
 
                 
-                if result_x[4]==0 and result_y[4]==0 :# converge fit
-             
-                    
-                    if result_x[5] == 3 and result_y[5]==3: ## covariance matrix cut
 
-                        
-                        if result_x[1] < 7 and result_y[1] < 7:#chi/ndf cut
+            
+            if  output['bunches'] >2000:
 
+                if result_x[4]==0 and result_y[4]==0:
 
+                    if result_x[5] == 3 and result_y[5]==3: 
+
+                        if  result_x[1] < 7 and  result_y[1] < 7:
+
+                            
+                            # arrays
+
+                            chi2_NDF_x=np.append(chi2_NDF_x,result_x[1])
+
+                            run_number =np.append(run_number,output['run'])
+
+                            chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
+                                
+                            ###### fit results
+                            fit_x = result_x[15]
+                            fit_status_x = result_x[16]
+
+                            fit_y = result_y[15]
+                            fit_status_y = result_y[16]
                             
                             ###################################
                             # sigma X  and Y scan(width of beam)
                             ###################################
-
-
-                            relative_error_width_x = (result_x[7]/result_x[0]) *100
-                            relative_error_width_y = (result_y[7]/result_y[0]) *100
-                            
-                            rel_error_capsigma_x =np.append(rel_error_capsigma_x,relative_error_width_x)
-
-                            rel_error_capsigma_y=np.append(rel_error_capsigma_y,relative_error_width_y)
+                        
 
                             ################################
+                            
                             # nominal mu (luminosity)
                             ###############################
 
-
+                        
                             luminosity_of_beam =expected_luminosity(result_x[0],result_y[0],product_of_intensity)
 
                             # error on lumi
@@ -700,13 +795,21 @@ for filename in fit_pickle:
 
                             # error in luminsoity
                             error_on_luminosity = absolute_luminosity * luminosity_of_beam
-                            
-                            # relative luminosity
-                            relative_error_on_luminosity= (error_on_luminosity/luminosity_of_beam)*100
-                            # relative lumisnoity array
-                            rel_error_on_lumi = np.append(rel_error_on_lumi,relative_error_on_luminosity)
+                          
 
 
+#                            print error_on_luminosity,"my method"
+                            #### numerical error on luminosity
+
+
+                            lumi_x =  calc_with_error_lumi(width, fit_x, fit_status_x, result_y[0], product_of_intensity, fit_x)
+ 
+                            lumi_y =  calc_with_error_lumi(width, fit_y, fit_status_y, result_x[0], product_of_intensity, fit_y)
+
+
+                            num_lumi_error = math.sqrt(lumi_x + lumi_y)
+
+#                            print lumi_error,"num method"
 
                             ###################################
                             # figure of merit
@@ -716,8 +819,25 @@ for filename in fit_pickle:
                             #################################
 
 
+                            ### numerical method for FOM error
+
+
+
+
+                            fom_x = calc_with_error_fom(width,max_function, fit_x, fit_status_x, result_y[0], product_of_intensity, fit_x)
+#                            print fom_x,"fom x"
+                            fom_y = calc_with_error_fom_y(width, fit_y, fit_status_y,result_x[0], result_x[2],product_of_intensity,fit_y)
+
+                            num_fom_error = math.sqrt(fom_x + fom_y)
+#                            print num_fom_error,"num_fom_error"
+
+                            # figure of merit
+
+
 
                             Figure_of_Merit= result_x[2] / luminosity_of_beam
+
+
 
                             # I have exlained the modified form of FOM defination
                             # FOM = (31.3249 * (A_1x +A_2x)* sigma_y) / n1n2
@@ -725,6 +845,9 @@ for filename in fit_pickle:
                             # x derivatives
 
                             dignol_offdiagnol_derivative_of_FOM_x = FOM_x(result_y[0],product_of_intensity,result_x[9]['error_amplitude1'], result_x[9]['error_amplitude2'],result_x[8]['cov_amp1_amp2'])
+
+
+#                            print dignol_offdiagnol_derivative_of_FOM_x
                             # dignol terms for FOM w.r.t y scan parameters
 
                             diagnol_derivative_y = FOM_y(product_of_intensity,result_x[10]['value_amplitude1'], result_x[10]['value_amplitude2'], result_y[12]['der_CapSigma_amplitude1_value'], result_y[12]['der_CapSigma_amplitude2_value'], result_y[12]['der_CapSigma_sigma1_value'], result_y[12]['der_CapSigma_sigma2_value'], result_y[12]['der_CapSigma_mean1_value'] ,result_y[12]['der_CapSigma_mean2_value'],result_y[9]['error_amplitude1'],result_y[9]['error_amplitude2'], result_y[9]['error_sigma1'],result_y[9]['error_sigma2'],result_y[9]['error_mean1'],result_y[9]['error_mean2'])
@@ -734,47 +857,22 @@ for filename in fit_pickle:
 
                             # FOM_Y FUNCTION returns me 6 values the last one correspond to dignol y term
                             dignol_y_terms = diagnol_derivative_y[6]
-
+                        
 
                             # off dignol y terms
-                            
+                        
                             off_dignol_y= offdiagnol(diagnol_derivative_y[0],diagnol_derivative_y[2],diagnol_derivative_y[4],diagnol_derivative_y[1],diagnol_derivative_y[3],diagnol_derivative_y[5],result_y[8]['cov_amp1_mean1'], result_y[8]['cov_amp1_sigma1'],result_y[8]['cov_amp1_amp2'],result_y[8]['cov_amp1_sigma2'],result_y[8]['cov_amp1_mean2'],result_y[8]['cov_mean1_sigma1'],result_y[8]['cov_mean1_amp2'], result_y[8]['cov_mean1_sigma2'],result_y[8]['cov_mean1_mean2'],result_y[8]['cov_sigma1_amp2'],result_y[8]['cov_sigma1_sigma2'], result_y[8]['cov_sigma1_mean2'],result_y[8]['cov_amp2_sigma2'], result_y[8]['cov_amp2_mean2'],result_y[8]['cov_sigma2_mean2'] ) 
 
 
 
                             # uncertnaity on FOM
                             uncertanity_on_FOM = math.sqrt(dignol_offdiagnol_derivative_of_FOM_x + dignol_y_terms + off_dignol_y)
+#                            print uncertanity_on_FOM,"uncertanity_on_FOM"
+
+
                         
 
-                            # error on FOM
                         
-                            FOM_relative_error = (uncertanity_on_FOM / Figure_of_Merit) *100
-                            
-
-                            # appending the FOM error
-                            rel_error_on_FOM = np.append(rel_error_on_FOM,FOM_relative_error)
-                            
-
-                            run_number =np.append(run_number,output['run'])
-
-
-                            if FOM_relative_error <1:
-
-
-                                FOM=np.append(FOM,Figure_of_Merit)
-                            
-                                FOM_error = np.append(FOM_error,uncertanity_on_FOM)
-
-                                date_of_scans= np.append(date_of_scans,output['date'])
-
-                            
-                                graph("plots/FOM_date.png", "fomvs date", len(date_of_scans), date_of_scans, FOM,FOM_error,"date","fom",True)
-
-
-
-
-                            
-                        histogram(100,0,100,rel_error_on_FOM ,"fom_error","plots/FOM_rel_error.png","fom_error")
 
 
 
