@@ -44,9 +44,9 @@ from error_propagation_FOM import *
 # importing pickle files
 
 
-fit_pickle = sorted(glob.glob("fits_4WP/integrated/fit_integrated_trk_run_362661.pickle"))
+#fit_pickle = sorted(glob.glob("fits/integrated/fit_integrated_trk_run_362661.pickle"))
 
-#fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
+fit_pickle = sorted(glob.glob("fits_4WP/integrated/*trk*"))
 
 
 
@@ -651,50 +651,65 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
 
+num_width_x_error = np.array([])
+num_width_y_error = np.array([])
+
+# peak x and y                                                                  
+num_peak_x_error = np.array([])
+num_peak_y_error = np.array([])
+
+# FOM and nominal mu                                                            
+num_FOM_error = np.array([])
+num_nominal_mu_error =np.array([])
 
 
 
-#### empty arrays
+# derivative method
+
+
+peak_x =np.array([])
+peak_x_error=np.array([])
+
+peak_y =np.array([])
+peak_y_error=np.array([])
+
+
+
+
+
+
+CapSigma_x =np.array([])
+CapSigma_x_error=np.array([])
+
+
+
+CapSigma_y =np.array([])
+CapSigma_y_error=np.array([])
+
+
+
+
+
+
+nominal_mu =np.array([])
+nominal_mu_error =np.array([])
+
+
 
 FOM =np.array([])
 FOM_error =np.array([])
-peak =np.array([])
-peak_error=np.array([])
 
 
+
+
+
+scans_date= np.array([])
+run_number= np.array([])
 
 
 chi2_NDF_x=np.array([])
 
 chi2_NDF_y=np.array([])
-
-
-# peak (relative error)
-rel_error_on_peak_x = np.array([])
-
-rel_error_on_peak_y = np.array([])
-
-# rel error on capsigma
-rel_error_capsigma_x =np.array([])
-
-rel_error_capsigma_y=np.array([])
-
-rel_error_on_FOM=np.array([])
-
-rel_error_on_lumi=np.array([])
-
-date_of_scans= np.array([])
-
-run_number= np.array([])
-
-
-# paramters relative error
-par1_x= np.array([])
-par2_x= np.array([])
-
-par1_y= np.array([])
-par2_y= np.array([])
-
 
 
 
@@ -766,9 +781,20 @@ for filename in fit_pickle:
 
                             chi2_NDF_x=np.append(chi2_NDF_x,result_x[1])
 
+
+
                             run_number =np.append(run_number,output['run'])
 
+
+
                             chi2_NDF_y=np.append(chi2_NDF_y,result_y[1])
+
+
+
+                            scans_date = np.append(scans_date, output['date'])
+
+
+
                                 
                             ###### fit results
                             fit_x = result_x[15]
@@ -777,15 +803,49 @@ for filename in fit_pickle:
                             fit_y = result_y[15]
                             fit_status_y = result_y[16]
                             
-                            ###################################
-                            # sigma X  and Y scan(width of beam)
-                            ###################################
+                            ##############################################
+                            # sigma X  and Y scan(width of beam) and errors
+                            ##############################################
+
+
+
+                            CapSigma_x =np.append(CapSigma_x, result_x[0] )
+
+                            CapSigma_x_error=np.append(CapSigma_x_error, result_x[7] )
+
+
+
+                            CapSigma_y =np.append(CapSigma_y, result_y[0] )
+
+                            CapSigma_y_error=np.append(CapSigma_y_error, result_y[7] )
                         
 
-                            ################################
+
+                    
+
+                            #############################################
+                            # peak X  and Y scan(width of beam) and errors
+                            #############################################
+
+
+                            peak_x =np.append(peak_x,result_x[2] )
+
+                            peak_x_error=np.append( peak_x_error,result_x[6] )
+
+
+                            peak_y =np.append(peak_y,result_y[2])
+
+                            peak_y_error=np.append(peak_y_error,result_y[6])
+
+
+
+
+
                             
-                            # nominal mu (luminosity)
-                            ###############################
+
+                            ######################################
+                            # nominal mu (luminosity) and its err0r
+                            #######################################
 
                         
                             luminosity_of_beam =expected_luminosity(result_x[0],result_y[0],product_of_intensity)
@@ -795,10 +855,16 @@ for filename in fit_pickle:
 
                             # error in luminsoity
                             error_on_luminosity = absolute_luminosity * luminosity_of_beam
+
+
+                            nominal_mu =np.append(nominal_mu, luminosity_of_beam  )
+                            nominal_mu_error =np.append(nominal_mu_error,error_on_luminosity   )
+
+
                           
 
 
-#                            print error_on_luminosity,"my method"
+
                             #### numerical error on luminosity
 
 
@@ -810,6 +876,10 @@ for filename in fit_pickle:
                             num_lumi_error = math.sqrt(lumi_x + lumi_y)
 
 #                            print lumi_error,"num method"
+
+
+
+
 
                             ###################################
                             # figure of merit
@@ -867,10 +937,59 @@ for filename in fit_pickle:
 
                             # uncertnaity on FOM
                             uncertanity_on_FOM = math.sqrt(dignol_offdiagnol_derivative_of_FOM_x + dignol_y_terms + off_dignol_y)
-#                            print uncertanity_on_FOM,"uncertanity_on_FOM"
 
 
-                        
+                            ## appending
+
+                            FOM=np.append(FOM , Figure_of_Merit)
+
+                            FOM_error = np.append(FOM_error , uncertanity_on_FOM)
+
+
+
+
+
+                            ## numeircal method
+
+
+
+                            num_width_x_error = np.append(num_width_x_error , result_x[13] )
+                            num_width_y_error = np.append( num_width_y_error , result_y[13])
+
+                            # peak x and y                                                                                                                                  
+                            num_peak_x_error = np.append(num_peak_x_error , result_x[14] )
+                            num_peak_y_error = np.append(num_peak_y_error , result_y[14] )
+
+                            # FOM and nominal mu                                                                                                                            
+                            num_FOM_error = np.append(num_FOM_error , num_fom_error )
+
+
+                            num_nominal_mu_error = np.append(num_nominal_mu_error , num_lumi_error )
+
+
+                            my_results = []
+               
+
+                            num_errors = {'Num_CapSigmaX_error':num_width_x_error,'Num_CapSigma_y_error':num_width_y_error, 'Num_Peak_x_error':num_peak_x_error ,'Num_Peak_y_error':num_peak_y_error ,'Num_FOM_error':num_FOM_error,'Num_Nominal_mu_error':num_nominal_mu_error }
+
+
+
+                            der_errors = {'figure_of_merit':FOM ,'Figure_Merit_error':FOM_error,'run':run_number,'Peak_x':peak_x,'Peak_x_error':peak_x_error,'Peak_y':peak_y,'Peak_y_error':peak_y_error,'CapSigmaX':CapSigma_x,'CapSigmaX_error':CapSigma_x_error,'CapSigmaY':CapSigma_y,'CapSigmaY_error':CapSigma_y_error,'Chi2_NDF_X':chi2_NDF_x,'Chi2_NDF_Y':chi2_NDF_y,'Date':scans_date,'nom_mu':nominal_mu ,'nom_mu_error':nominal_mu_error}
+
+
+                            my_results=[num_errors,der_errors]
+                            
+
+
+
+
+
+                            with open('my_results/my_results_allScans_data.pkl','wb') as pickle_file:
+                                pickle.dump(my_results,pickle_file)
+
+
+
+
 
                         
 
