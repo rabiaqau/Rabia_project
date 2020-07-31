@@ -499,27 +499,83 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
         Capsigma = (1 / math.sqrt (2 * math.pi)) * integral / peak 
 
+        
 
+        Xmax = double_gauss_fit.GetMaximumX()
 
 
         # module peak_derivtive(for more information)
 
 
-#        derivative_peak_amplitude
-        peak_amplitude1=derivative_peak_amplitude.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+        der_a1= (1.0 / (math.sqrt(2 * math.pi) * sigma1_value) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean1_value)**2 / (sigma1_value **2) ) )# checked        
 
+         #a2                                                                                                                      
 
-        peak_amplitude2=derivative_peak_amplitude.evalf(subs={amplitude:amplitude2_value,sigma:sigma2_value,mean:mean2_value, x:peak_position})
+        der_a2= (1.0 / ( math.sqrt(2 * math.pi) * sigma2_value) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean2_value)**2 / (sigma2_value **2) ) )# \checked      
 
-        peak_sigma1 =derivative_peak_sigma.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+        # s1                                                                                                                      
+        der_s1= - amplitude1_value * (1.0/ ( math.sqrt(2 * math.pi) * sigma1_value **2) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean1_value)**2 / (sigma1_value **2) ) ) + amplitude1_value * (1.0/ ( math.sqrt(2 * math.pi) * sigma1_value **4 ) )* (Xmax - mean1_value)**2 * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean1_value)**2 / (sigma1_value **2) ) )
+                                                                                                                                  
+         #s2                                                                                                                      
+        der_s2= - amplitude2_value * (1.0/ ( math.sqrt(2 * math.pi) * sigma2_value **2 ) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean2_value)**2 / (sigma2_value **2) ) ) + amplitude2_value* (1.0/ ( math.sqrt(2 * math.pi) * sigma2_value **4 ) )  * (Xmax - mean2_value)**2 * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean2_value)**2 / (sigma2_value **2) ) )                                                                                                                               
 
-        peak_sigma2 = derivative_peak_sigma.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+         #m1                                                                                                                      
 
-        peak_mean1=derivative_peak_mean.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+        der_m1=  amplitude1_value * (Xmax - mean1_value) * ( 1.0/ ( math.sqrt(2 * math.pi) * sigma1_value **3) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean1_value) **2 / (sigma1_value **2) ) ) # checked                                                                                                              
+         #m2                                                                                                                      
+        der_m2=  amplitude2_value * (Xmax - mean2_value) * ( 1.0/ ( math.sqrt(2 * math.pi) * sigma2_value **3) ) * np.exp( - (1.0 / 2.0) * ( ( Xmax - mean2_value) **2 / (sigma2_value **2) ) ) #checked                                
 
-        peak_mean2=derivative_peak_mean.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
         
-        dignol_peak= (peak_amplitude1* diagnol_error['error_amplitude1'] )**2 + (peak_amplitude2 *diagnol_error['error_amplitude2'])**2 + (peak_sigma1 *diagnol_error['error_sigma1'] )**2+(peak_sigma2 *diagnol_error['error_sigma2'] )**2 + (peak_mean1 *diagnol_error['error_mean1'] )**2 + (peak_mean2 *diagnol_error['error_mean2'] )**2
+
+        off_diagnol_0= 2.0 * der_a1 * der_m1 * cov(0,1) + 2.0 * der_a1 * der_s1 * cov(0,2) + 2.0 * der_a1 * der_a2 * cov(0,3) + 2.0 * der_a1 * der_s2 * cov(0,4) + 2.0 * der_a1 * der_m2 * cov(0,5)
+
+
+
+        off_diagnol_1 = 2.0 * der_m1 * der_s1 * cov(1,2) + 2.0 * der_m1 * der_a2 * cov(1,3) + 2.0 * der_m1 * der_s2 * cov(1,4) + 2.0* der_m1 * der_m2 * cov(1,5) 
+
+
+
+
+         #2                                                                                                                                                                                                 
+        off_diagnol_2 = 2.0 * der_s1 * der_a2 * cov(2,3) + 2.0 * der_s1 * der_s2 * cov(2,4) + 2.0 * der_s1 * der_m2 * cov(2,5)
+
+
+         #3                                                                                                                                                                                                 
+        off_diagnol_3 = 2.0 * der_a2 * der_s2 * cov(3,4) + 2.0 * der_a2 * der_m2 * cov(3,5)
+
+
+
+
+         #4                                                                                                                                                                                                 
+        off_diagnol_4 = 2.0 * der_s2 * der_m2 * cov(4,5)
+
+
+
+        peak_error = math.sqrt( ( amplitude1_error * der_a1 )**2 + ( amplitude2_error * der_a2 ) **2 + ( sigma1_error * der_s1 )**2 + ( sigma2_error * der_s2)**2 + (mean1_error * der_m1)**2 + (mean2_error * der_m2)**2 + off_diagnol_0 + off_diagnol_1 + off_diagnol_2 + off_diagnol_3 + off_diagnol_4 )
+
+
+
+
+
+
+
+
+
+#        derivative_peak_amplitude
+        # peak_amplitude1=derivative_peak_amplitude.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+
+        # peak_amplitude2=derivative_peak_amplitude.evalf(subs={amplitude:amplitude2_value,sigma:sigma2_value,mean:mean2_value, x:peak_position})
+
+        # peak_sigma1 =derivative_peak_sigma.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+        # peak_sigma2 = derivative_peak_sigma.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+        # peak_mean1=derivative_peak_mean.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+
+        # peak_mean2=derivative_peak_mean.evalf(subs={amplitude:amplitude1_value,sigma:sigma1_value,mean:mean1_value, x:peak_position})
+        
+#        dignol_peak= (peak_amplitude1* diagnol_error['error_amplitude1'] )**2 + (peak_amplitude2 *diagnol_error['error_amplitude2'])**2 + (peak_sigma1 *diagnol_error['error_sigma1'] )**2+(peak_sigma2 *diagnol_error['error_sigma2'] )**2 + (peak_mean1 *diagnol_error['error_mean1'] )**2 + (peak_mean2 *diagnol_error['error_mean2'] )**2
 
 
 
@@ -531,12 +587,12 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
         # off diagnol terms
         
-        off_diagnol_peak_terms = offdiagnol(peak_amplitude1,peak_sigma1,peak_mean1,peak_amplitude2,peak_sigma2,peak_mean2,covariance_element['cov_amp1_mean1'], covariance_element['cov_amp1_sigma1'],covariance_element['cov_amp1_amp2'],covariance_element['cov_amp1_sigma2'],covariance_element['cov_amp1_mean2'],covariance_element['cov_mean1_sigma1'],covariance_element['cov_mean1_amp2'], covariance_element['cov_mean1_sigma2'],covariance_element['cov_mean1_mean2'],covariance_element['cov_sigma1_amp2'],covariance_element['cov_sigma1_sigma2'], covariance_element['cov_sigma1_mean2'],covariance_element['cov_amp2_sigma2'], covariance_element['cov_amp2_mean2'],covariance_element['cov_sigma2_mean2'] )
+#        off_diagnol_peak_terms = offdiagnol(peak_amplitude1,peak_sigma1,peak_mean1,peak_amplitude2,peak_sigma2,peak_mean2,covariance_element['cov_amp1_mean1'], covariance_element['cov_amp1_sigma1'],covariance_element['cov_amp1_amp2'],covariance_element['cov_amp1_sigma2'],covariance_element['cov_amp1_mean2'],covariance_element['cov_mean1_sigma1'],covariance_element['cov_mean1_amp2'], covariance_element['cov_mean1_sigma2'],covariance_element['cov_mean1_mean2'],covariance_element['cov_sigma1_amp2'],covariance_element['cov_sigma1_sigma2'], covariance_element['cov_sigma1_mean2'],covariance_element['cov_amp2_sigma2'], covariance_element['cov_amp2_mean2'],covariance_element['cov_sigma2_mean2'] )
 
 
 
         # # here is the error on peak
-        error_on_peak = math.sqrt( dignol_peak + off_diagnol_peak_terms)
+ #       error_on_peak = math.sqrt( dignol_peak + off_diagnol_peak_terms)
 
 
 
@@ -599,7 +655,7 @@ def analyse_scan(scan,separations, luminosity, error, path, run_number, bunches,
 
 
 
-        return Capsigma, peak, error_on_peak, Capsigma_error, Capsigma_derivative_dict
+        return Capsigma, peak, peak_error, Capsigma_error, Capsigma_derivative_dict
 
 
     # calling the cap_sigma fucntion
